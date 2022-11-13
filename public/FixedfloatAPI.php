@@ -1,23 +1,20 @@
 <?php
 
-namespace App\Models;
-// namespace woju\fixedfloat;
+namespace FixedFloatAPI;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FixedFloatAPI
 {
-    use HasFactory;
     protected $baseUrl = "https://fixedfloat.com/api/v1/";
 
     
     /**
-     * Constructor for BinanceAPI
+     * Constructor for FixedFloatAPI
      */
-    function __construct()
+    function __construct($key=NULL, $secret=NULL)
     {
-        $this->key        = getenv('FIXEDFLOAT_API_KEY');
-        $this->secret     = getenv('FIXEDFLOAT_SECRET_KEY');
+        $this->key        = $key ?? getenv('FIXEDFLOAT_API_KEY');
+        $this->secret     = $secret ?? getenv('FIXEDFLOAT_SECRET_KEY');
 
         $this->curl       = curl_init();
         $curl_options     = [
@@ -28,7 +25,6 @@ class FixedFloatAPI
         ];
 
         curl_setopt_array($this->curl, $curl_options);
-        
     }
 
     /**

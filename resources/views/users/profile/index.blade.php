@@ -91,7 +91,8 @@
 
       <div class="col-xl-7">
          <div class="card">
-            <form action="{{ route('home') }}" method="POST">
+            @include('notification')
+            <form action="{{ route('users.profile.save', $user->id) }}" method="POST">
                @csrf
                <div class="card-body">
                   <h4 class="card-title mb-4">{{__('Change Password')}}</h4>

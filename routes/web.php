@@ -1,14 +1,15 @@
 <?php
 
-use adman9000\binance\BinanceAPIFacade;
-use App\Http\Controllers\AffiliateController;
-use App\Http\Controllers\BinanceController;
-use App\Http\Controllers\KucoinController;
-use App\Http\Controllers\PayoutsController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\PayoutsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AffiliateController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,46 +23,60 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    // $bin = app('binance');
-    // $bin = $bin->getRecentTrades();
-    // return $bin;
     return view('welcome');
 });
-
-
-Route::get('s',     [KucoinController::class, 'index']);
-
-
-#---------------------------- Create Binance wallet for users -------------------------
-Route::get('create-sub-account',      [BinanceController::class, 'sub_account']);
-#---------------------------- Create Binance wallet for users -------------------------
-
-Route::get('balance',   [BinanceController::class, 'balance']);
-Route::get('check',     [BinanceController::class, 'checkticker']);
-Route::get('ticker',    [BinanceController::class, 'ticker']);
-Route::get('trade',     [BinanceController::class, 'openTrade']);
 
 Auth::routes();
 
 
-Route::group(['prefix' => 'user', 'as' => 'users.', 'middleware' => ['auth']], function(){
+Route::group(['prefix' => 'user', 'as' => 'users.', 'middleware' => ['auth', 'referral']], function(){
     // user dashboard
     Route::get('dashboard',                         [DashboardController::class, 'index'])->name('dashboard');
     Route::get('profile',                           [ProfileController::class, 'index'])->name('profile');
+    Route::post('profile/{id}/save',                [ProfileController::class, 'update'])->name('profile.save');
 
-    Route::group(['as' => 'trans.', 'middleware' => ['auth']], function(){
-        Route::get('payouts',                       [PayoutsController::class, 'index'])->name('payouts');
+    Route::group(['as' => 'trans.'], function(){
+        Route::get('payouts',                       [PayoutsController::class, 'list'])->name('payouts');
+        Route::post('payouts/request',              [PayoutsController::class, 'store'])->name('payouts.request');
         Route::get('affiliate',                     [AffiliateController::class, 'affiliate'])->name('affiliate');
-        Route::get('index',                         [TransactionController::class, 'index'])->name('index');
+        Route::get('get/affiliate',                 [AffiliateController::class, 'list'])->name('affiliate.get');
+        Route::get('orders',                        [TransactionController::class, 'index'])->name('index');
     });
 
     Route::get('referral-list',                     [HistoryController::class, 'referral_list'])->name('referral.list');
+    
+    Route::group(['prefix' => 'order'], function(){
+        Route::any('create', [OrderController::class, 'createOrder'])->name('create');
+        Route::any('lists',  [OrderController::class, 'getOrder'])->name('get');
+        Route::any('price',  [OrderController::class, 'getPrice'])->name('price');
+    });
+
 });
 
 Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('logout', function () {
     // session_destroy();
-    auth()->logout();
+    Auth::logout();
     return redirect(route('home'))->with('success', "You've been successfully logged out");
 })->name('logout');
+
+
+/**
+ * Admin Routes starts here
+ */
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function(){
+    // user dashboard
+    Route::get('/',                         [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('profile',                   [ProfileController::class, 'index'])->name('profile');
+    Route::post('profile/{id}/save',        [ProfileController::class, 'update'])->name('profile.save');
+
+    Route::resource('orders',   OrderController::class);
+    Route::resource('payouts',  PayoutsController::class);
+    Route::resource('users',    UserController::class);
+    // Route::get('affiliate',                     [AffiliateController::class, 'affiliate'])->name('affiliate');
+    // Route::get('get/affiliate',                 [AffiliateController::class, 'list'])->name('affiliate.get');
+    // Route::get('orders',                        [TransactionController::class, 'index'])->name('index');
+
+    // Route::get('referral-list',                     [HistoryController::class, 'referral_list'])->name('referral.list');
+});

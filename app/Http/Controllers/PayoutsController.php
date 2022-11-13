@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Payouts;
+use App\Models\User;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 
 class PayoutsController extends Controller
@@ -12,7 +14,35 @@ class PayoutsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
+    {
+        $payouts = Payouts::with('user', 'orders')->orderBy('created_at', 'DESC');
+        if($request->ajax())
+        {
+            return DataTables::eloquent($payouts)
+                ->addColumn('paid_status', function ($data) {
+                    return status_code($data->paid_status);
+                })
+                ->addColumn('customer', function ($data) {
+                    return $data->user->name;
+                })
+                ->addColumn('profit', function ($data) {
+                    return "BTC $data->profit";
+                })
+                ->editColumn('date', function ($data) {
+                    return show_datetime($data->created_at);
+                })
+                ->make(true);
+        }
+        return view('admin.payouts.index', compact('payouts'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list()
     {
         $payouts = Payouts::where('user_id', auth()->id())->paginate(15);
         return view('users.trans.payout', compact('payouts'));
@@ -36,7 +66,22 @@ class PayoutsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'amount'            =>  'required|min:0.001',
+            'wallet_address'    =>  'required|min:35'
+        ]);
+        // store withdrawal request and debit user balance
+        $user = User::find(auth()->id());
+        $payout = Payouts::create([
+            'user_id'   =>    $user->id,
+            'amount'    =>  $user->btc_balance,
+            'status'    =>  0,
+            'wallet_address'    =>  $request->wallet_address,
+        ]);
+        $user->btc_balance = 0;
+        $user->save();
+
+        return redirect()->back()->with('success', "Withdrawal request received successfully");
     }
 
     /**

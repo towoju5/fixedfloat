@@ -6,6 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use KuCoin\SDK\KuCoinApi;
+use App\Models\Order;
 
 if (!function_exists('kucoin')) {
    /**
@@ -51,13 +52,27 @@ if (!function_exists('result')) {
    }
 }
 
+if (!function_exists('get_error_response')) {
+   function get_error_response($data, $code = NULL)
+   {
+      $err = $code ?? 400;
+      $result = [
+         'status' => 'error',
+         'error'  => $code ?? 400,
+         'message' => "Request Error",
+         'data'   => $data
+      ];
+      return response($result, $err);
+   }
+}
+
 if (!function_exists('settings')) {
    function settings($key)
    {
       if ($key == 'website_title') {
          return 'sneat';
       }
-      
+
       $result = Settings::where('key', $key)->first();
       if(!empty($result) && count($result) > 0) :
          return $result->value;
@@ -170,7 +185,7 @@ if (!function_exists("updateDotEnv")) {
 
       // rewrite file content with changed data
       if (file_exists($path)) {
-         // replace current value with new value 
+         // replace current value with new value
          file_put_contents(
             $path,
             str_replace(
@@ -264,5 +279,97 @@ if (!function_exists('searchInArray')) {
          }
       }
       return false;
+   }
+}
+
+if (!function_exists('get_commission')) {
+   /**
+    * return uuid()
+    */
+   function get_commission($price) : float
+   {
+      $commission = 0;
+      $getCharges = settings('order_charges') ?? 1;
+      $commission = (($price / 100) * $getCharges);
+      return floatval($commission);
+   }
+}
+
+if (!function_exists('save_order')) {
+   /**
+    * return uuid()
+    */
+   function save_order($data) : void
+   {
+      Order::create([
+         'user_id'         => auth()->id(),
+         'order_id'        => $data['id'],
+         'from_currency'   => $data['from']['currency'],
+         'to_currency'     => $data['to']['currency'],
+         'send_amount'     => $data['from']['amount'],
+         'receive_amount'  => $data['to']['amount'],
+         'receive_address' => $data['to']['address'],
+         'order_type'      => $data['type'],
+         'order_rate'      => $data['rate'],
+         'order_rateRev'   => $data['rateRev'],
+         'order_status'    => $data['status'],
+         'order_left'      => $data['left'],
+         'order_left'      => $data['left'],
+         'order_token'     => $data['token'],
+         'raw_data'        => json_encode($data),
+         'order_reg'       => Carbon::parse($data['reg'])->format('Y-m-d H:i'),
+         'order_expiration'=> Carbon::parse($data['expiration'])->format('Y-m-d H:i'), // time stamp,
+      ]);
+   }
+}
+
+if (!function_exists('status_code')) {
+   /**
+    * return meaning of code
+    */
+   function status_code($code) : string
+   {
+      switch ($code) {
+         case '0':
+            return "New order.";
+            break;
+         case '1':
+            return "The transaction is waiting for the required number of confirmations.";
+            break;
+         case '2':
+            return "Currency exchange in progress";
+            break;
+         case '3':
+            return "Sending funds";
+            break;
+         case '4':
+            return "Completed";
+            break;
+         case '5':
+            return "Expired";
+            break;
+         case '6':
+            return "Cancelled";
+            break;
+         case '7':
+            return "A decision must be made to proceed with the order, please contact support";
+            break;
+
+         default:
+            return "Pending";
+            break;
+      }
+   }
+}
+
+if (!function_exists('currency_btc')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function currency_btc($currency, $amount)
+   {
+      return Carbon::createFromTimeStamp(strtotime($datetime))->diffForHumans();
    }
 }

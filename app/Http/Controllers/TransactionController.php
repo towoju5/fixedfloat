@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transactions;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class TransactionController extends Controller
 {
@@ -12,11 +14,56 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $actives = Transactions::where('user_id', auth()->id())->where('status', 1)->orWhere('status', 0)->paginate(15);
-        $lists   = Transactions::where('user_id', auth()->id())->where('status', 1)->paginate(15);
-        return view('users.trans.index', compact('lists', 'actives'));
+        $user = auth()->id();
+        $active = [0,1];
+        $actives = Order::whereUserId($user)->whereIn('order_status', $active)->orderBy('created_at', 'DESC');
+        $lists = Order::whereUserId($user)->whereNotIn('order_status', $active)->orderBy('created_at', 'DESC');
+
+        if($request->ajax() && $request->type == 'actives')
+        {
+            return DataTables::eloquent($actives)
+                ->addColumn('date', function ($data) {
+                    return date('F j, Y g:i A', strtotime($data->order_reg));
+                })
+                ->addColumn('send', function ($data) {
+                    return "$data->from_currency $data->send_amount";
+                })
+                ->addColumn('receive', function ($data) {
+                    return "$data->to_currency  $data->receive_amount";
+                })
+                ->editColumn('order_status', function ($data) {
+                    return status_code($data->order_status);
+                })
+                ->editColumn('date', function ($data) {
+                    return show_datetime($data->created_at);
+                })
+                ->make(true);
+        }
+
+        if($request->ajax() && $request->type == 'list')
+        {
+            return DataTables::eloquent($lists)
+                ->addColumn('order_id', function ($data) {
+                    return $data->order_id;
+                })
+                ->addColumn('send_amount', function ($data) {
+                    return "$data->from_currency $data->send_amount";
+                })
+                ->addColumn('receives', function ($data) {
+                    return "$data->to_currency $data->receive_amount";
+                })
+                ->addColumn('receive_address', function ($data) {
+                     return $data->receive_address;
+                })
+                ->addColumn('date', function ($data) {
+                    return show_datetime($data->created_at);
+                })
+                ->make(true);
+        }
+
+        return view('users.trans.index');
     }
 
     /**

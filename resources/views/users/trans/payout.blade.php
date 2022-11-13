@@ -11,18 +11,30 @@
          <div class="card">
             <div class="card-body">
                <h5 class="card-header">{{ __('Payout') }}</h5>
-               <form action="" method="post">
+               @include('notification')
+               <form action="{{ route('users.trans.payouts.request') }}" method="post">
+                  @csrf
                   <div class="form-group row">
-                     <label class="col-md-2 col-form-label" for="">{{__('Bitcoin address')}}:</label>
+                     <label class="col-md-2 col-form-label" for="wallet_address">{{__('Bitcoin address')}}:</label>
                      <div class="col-md-8">
                         <input type="text" class="form-control" name="wallet_address" id="wallet_address">
+                     </div>
+                  </div>
+                  <div class="form-group row" hidden>
+                     <label class="col-md-2 col-form-label" for="amount">{{__('Amount')}}:</label>
+                     <div class="col-md-8">
+                        <input type="hidden" class="form-control" name="amount" value="{{$user->btc_balance}}" id="amount">
                      </div>
                   </div>
                   <div class="form-group row">
                      <label class="col-md-2 col-form-label" for="">{{__('Ready to payout')}}:</label>
                      <div class="col-md-8">
-                        <p class="form-control-plaintext" readonly id="payout_amount">0 BTC (0 BTC less than the minimum 0.001 BTC</p>
+                        <p class="form-control-plaintext" readonly id="payout_amount">{{ number_format($user->btc_balance, 4) }} BTC 
+                           @if($user->btc_balance < 0.001) ({{ number_format($user->btc_balance, 3) }}  BTC {{__('less than the minimum')}} <b>0.001 BTC</b> @endif</p>
                      </div>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                     <button type="submit" class="btn btn-info btn-rounded">{{__('Payout')}}</button>
                   </div>
                </form>
             </div>
@@ -41,10 +53,10 @@
                   <caption class="ms-4">{{ $payouts->render('pagination') }}</caption>
                   <thead>
                      <tr>
-                        <th>S/N</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                        <th>Date</th>
+                        <th>{{__('S/N')}}</th>
+                        <th>{{__('Amount')}}</th>
+                        <th>{{__('Status')}}</th>
+                        <th>{{__('Date')}}</th>
                      </tr>
                   </thead>
                   <tbody>
@@ -52,7 +64,7 @@
                      <tr>
                         <td>{{ $k+1 }}</td>
                         <td>{{ $list->amount }}</td>
-                        <td>{{ $list->status }}</td>
+                        <td>{{ status_code($list->status) }}</td>
                         <td>{{ show_datetime($list->created_at) }}</td>
                      </tr>
                      @empty

@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ReferralLink;
-use App\Models\User;
-use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class HistoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,23 +13,7 @@ class ProfileController extends Controller
      */
     public function index()
     {
-        $user = auth()->id();
-        $user = User::find($user);
-        $page = 'users.profile.index';
-        $ref_link = $this->getReferralLink();
-
-        return view($page, compact('user', 'ref_link'));
-    }
-
-    /**
-     * A user has a referrer.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function getReferralLink()
-    {
-        // $code = ReferralLink::where('user_id', auth()->id())->first();
-        // return url("?ref=$code->code") ?? NULL;
+        //
     }
 
     /**
@@ -75,8 +56,7 @@ class ProfileController extends Controller
      */
     public function edit($id)
     {
-        $user = User::find(auth()->check());
-        return view('users.profile.edit', compact('users'));
+        //
     }
 
     /**
@@ -88,17 +68,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'password' => 'sometimes|min:6|confirmed|required_with:password_confirmed',
-        ]);
-        $user = User::find($id);
-        $user->password = bcrypt($request->password);
-        if($user->save()) :
-            Toastr::success("Password updated successfully");
-            return back();
-        endif;
-        Toastr::error("Unable to update Password");
-        return back();
+        //
     }
 
     /**

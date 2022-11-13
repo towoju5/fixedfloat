@@ -46,71 +46,44 @@
   <div class="menu-inner-shadow"></div>
 
   @if(auth()->check())
+    <ul class="menu-inner py-1" style="margin-top: 50%;">
     @if(auth()->user()->role == 'admin')
-    <ul class="menu-inner py-1">
-      <li class="menu-header small text-uppercase"><span class="menu-header-text">MENU</span></li>
+      <li class="menu-header small text-uppercase"><span class="menu-header-text">{{__('MENU')}}</span></li>
       <!-- Dashboard -->
       <li class="menu-item @if(Route::is('admin.dashboard'))) active @endif">
         <a href="{{ route('admin.dashboard') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-home-circle"></i>
-          <div data-i18n="Analytics">Dashboard</div>
+          <div data-i18n="Analytics">{{__('Dashboard')}}</div>
         </a>
       </li>
 
       <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">ACCOUNT</span>
+        <span class="menu-header-text">{{__('ACCOUNT')}}</span>
       </li>
-      <li class="menu-item @if(Route::is('users.deposit'))) active @endif">
-        <a href="{{ route('users.deposit') }}" class="menu-link">
+      
+      <li class="menu-item @if(Route::is('admin.users.index'))) active @endif">
+        <a href="{{ route('admin.users.index') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">Deposit</div>
+          <div data-i18n="Basic">{{ __('Users') }}</div>
+        </a>
+      </li>
+
+      <li class="menu-item @if(Route::is('admin.orders.index'))) active @endif">
+        <a href="{{ route('admin.orders.index') }}" class="menu-link">
+          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <div data-i18n="Basic">{{__('Orders')}}</div>
         </a>
       </li>
       
-      <li class="menu-item @if(Route::is('users.withdrawal'))) active @endif">
-        <a href="{{ route('users.withdrawal') }}" class="menu-link">
+      <li class="menu-item @if(Route::is('admin.payouts.index'))) active @endif">
+        <a href="{{ route('admin.payouts.index') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">Withdraw</div>
+          <div data-i18n="Basic">{{__('Withdraw Request')}}</div>
         </a>
       </li>
       
-      <li class="menu-header small text-uppercase"><span class="menu-header-text">Pages</span></li>
-      <li class="menu-item @if(Route::is('users.history.index'))) active @endif">
-        <a href="{{ route('users.history.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">History</div>
-        </a>
-      </li>
-      <li class="menu-item @if(Route::is('users.investment.records'))) active @endif">
-        <a href="{{ route('users.investment.records') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">Investment Records</div>
-        </a>
-      </li>
-      <li class="menu-item @if(Route::is('users.referral.list'))) active @endif">
-        <a href="{{ route('users.referral.list') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">Referral List</div>
-        </a>
-      </li>
-      
-      <li class="menu-header small text-uppercase"><span class="menu-header-text">Settings</span></li>
-      <li class="menu-item @if(Route::is('users.withdrawal.method'))) active @endif">
-        <a href="{{ route('users.withdrawal.method') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">Withdrawal Account</div>
-        </a>
-      </li>
-      <li class="menu-item @if(Route::is('users.profile'))) active @endif">
-        <a href="{{ route('users.profile') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
-          <div data-i18n="Basic">Profile</div>
-        </a>
-      </li>
     </ul>
-    @else
-    <ul class="menu-inner py-1">
-     
+    @else     
       <li class="menu-item @if(Route::is('users.trans.payouts'))) active @endif">
         <a href="{{ route('users.trans.payouts') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-collection"></i>
@@ -137,6 +110,7 @@
           <div data-i18n="Basic">{{__('Profile')}}</div>
         </a>
       </li>
+    @endif
       <li class="menu-item">
         <a href="{{ route('logout') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-collection"></i>
@@ -144,7 +118,6 @@
         </a>
       </li>
     </ul>
-    @endif
   @endif
 </aside>
 <!-- / Menu -->
@@ -194,7 +167,7 @@
                   </div>
                   <div class="flex-grow-1">
                     <span class="fw-semibold d-block">John Doe</span>
-                    <small class="text-muted">Admin</small>
+                    <small class="text-muted">{{__('Admin')}}</small>
                   </div>
                 </div>
               </a>
@@ -205,20 +178,20 @@
             <li>
               <a class="dropdown-item" href="#">
                 <i class="bx bx-user me-2"></i>
-                <span class="align-middle">My Profile</span>
+                <span class="align-middle">{{__('My Profile')}}</span>
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="#">
                 <i class="bx bx-cog me-2"></i>
-                <span class="align-middle">Settings</span>
+                <span class="align-middle">{{__('Settings')}}</span>
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="#">
                 <span class="d-flex align-items-center align-middle">
                   <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
-                  <span class="flex-grow-1 align-middle">Billing</span>
+                  <span class="flex-grow-1 align-middle">{{__('Billing')}}</span>
                   <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
                 </span>
               </a>
@@ -229,7 +202,7 @@
             <li>
               <a class="dropdown-item" href="auth-login-basic.html">
                 <i class="bx bx-power-off me-2"></i>
-                <span class="align-middle">Log Out</span>
+                <span class="align-middle">{{__('Log Out')}}</span>
               </a>
             </li>
           </ul>

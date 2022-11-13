@@ -50,7 +50,7 @@
                   </a>
                </div>
                <!-- /Logo -->
-               <h4 class="mb-2">Welcome to {{ settings('website_title') }}! 👋</h4>
+               <h4 class="mb-2">{{__('Welcome to')}} {{ settings('website_title') }}! 👋</h4>
                <p class="mb-4">{{__('Please sign-in to your account and start the adventure')}}</p>
 
                <form id="formAuthentication" class="mb-3" method="POST" action="{{ route('login') }}">
@@ -69,7 +69,7 @@
                         <label class="form-label" for="password">{{__('Password')}}</label>
                         @if (Route::has('password.request'))
                         <a href="{{ route('password.request') }}">
-                           <small>Forgot Password?</small>
+                           <small>{{__('Forgot Password')}}?</small>
                         </a>
                         @endif
                      </div>

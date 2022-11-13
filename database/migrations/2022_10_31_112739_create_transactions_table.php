@@ -25,7 +25,7 @@ class CreateTransactionsTable extends Migration
             $table->string('receive_address');
             $table->enum('status', [0,1,2,3])->comment("0 : pending, 1 : processing, 2 : pending_payout, 3 : completed");
             $table->timestampsTz();
-            $table->timestamp('deleted_at');
+            $table->timestamp('deleted_at')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

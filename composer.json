@@ -16,8 +16,11 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
+        "questocat/laravel-referral": "^1.0",
         "stevebauman/location": "^6.5",
-        "tanmuhittin/laravel-google-translate": "^2.1"
+        "tanmuhittin/laravel-google-translate": "^2.1",
+        "towoju5/fixedfloat": "dev-main",
+        "yajra/laravel-datatables-oracle": "^9.21"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
