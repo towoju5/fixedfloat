@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default"
+<html lang="{{ App::currentLocale() }}" class="light-style layout-menu-fixed" dir="ltr" data-theme="theme-default"
     data-assets-path="{{ url('backend') }}/assets/" data-template="vertical-menu-template-free">
 
 <head>
@@ -35,19 +35,17 @@
     <link rel="stylesheet" href="{{ url('backend') }}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <link rel="stylesheet" href="{{ url('backend') }}/assets/vendor/libs/apex-charts/apex-charts.css" />
-    <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="{{ url('assets/css/toastr.min.css') }}">
 
     <!-- DataTable CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{{ url('assets/css/buttons.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ url('assets/css/dataTables.bootstrap4.min.css') }}">
     <!-- DataTable CSS -->
 
     <!-- Helpers -->
     <script src="{{ url('backend') }}/assets/vendor/js/helpers.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"
-        integrity="sha512-24XP4a9KVoIinPFUbcnjIjAjtS59PUoxQj3GNVpWc86bCqPuy3YxAcxJrxFCxXe4GHtAumCbO2Ze2bddtuxaRw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.2/css/all.min.css">
+    <script src="{{ url('assets/js/feather.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url('assets/css/font-awesome.min.css') }}">
 
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
@@ -118,10 +116,10 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
     <!-- DataTable js -->
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+    <script src="{{ url('backend/assets/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url('backend/assets/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ url('backend/assets/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ url('backend/assets/js/buttons.print.min.js') }}"></script>
     <!-- DataTable js -->
 
     <script>

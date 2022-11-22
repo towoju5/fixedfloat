@@ -63,21 +63,23 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card p-3">
-                        <table class="table px-1" id="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Customer Name</th>
-                                    <th>Amount Send</th>
-                                    <th>Amount Received</th>
-                                    <!-- <th>Customer</th> -->
-                                    <th>Order Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                        <div class="table-responsive">
+                            <table class="table px-1" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Customer Name</th>
+                                        <th>Amount Send</th>
+                                        <th>Amount Received</th>
+                                        <!-- <th>Customer</th> -->
+                                        <th>Order Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

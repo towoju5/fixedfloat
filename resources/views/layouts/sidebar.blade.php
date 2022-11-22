@@ -46,9 +46,8 @@
   <div class="menu-inner-shadow"></div>
 
   @if(auth()->check())
-    <ul class="menu-inner py-1" style="margin-top: 50%;">
+    <ul class="menu-inner py-1" style="margin-top: 40%;">
     @if(auth()->user()->role == 'admin')
-      <li class="menu-header small text-uppercase"><span class="menu-header-text">{{__('MENU')}}</span></li>
       <!-- Dashboard -->
       <li class="menu-item @if(Route::is('admin.dashboard'))) active @endif">
         <a href="{{ route('admin.dashboard') }}" class="menu-link">
@@ -57,28 +56,30 @@
         </a>
       </li>
 
-      <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">{{__('ACCOUNT')}}</span>
-      </li>
-      
       <li class="menu-item @if(Route::is('admin.users.index'))) active @endif">
         <a href="{{ route('admin.users.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-user"></i>
           <div data-i18n="Basic">{{ __('Users') }}</div>
         </a>
       </li>
 
       <li class="menu-item @if(Route::is('admin.orders.index'))) active @endif">
         <a href="{{ route('admin.orders.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-cart-alt"></i>
           <div data-i18n="Basic">{{__('Orders')}}</div>
         </a>
       </li>
       
       <li class="menu-item @if(Route::is('admin.payouts.index'))) active @endif">
         <a href="{{ route('admin.payouts.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-wallet-alt"></i>
           <div data-i18n="Basic">{{__('Withdraw Request')}}</div>
+        </a>
+      </li>
+      <li class="menu-item">
+        <a href="{{ route('logout') }}" class="menu-link">
+          <i class="menu-icon tf-icons bx bxs-log-out-circle"></i>
+          <div data-i18n="Basic">{{__('Logout')}}</div>
         </a>
       </li>
       
@@ -86,37 +87,37 @@
     @else     
       <li class="menu-item @if(Route::is('users.trans.payouts'))) active @endif">
         <a href="{{ route('users.trans.payouts') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-user-plus"></i>
           <div data-i18n="Basic">{{__('Payouts')}}</div>
         </a>
       </li>
      
       <li class="menu-item @if(Route::is('users.trans.affiliate'))) active @endif">
         <a href="{{ route('users.trans.affiliate') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-traffic"></i>
           <div data-i18n="Basic">{{__('Affiliate Program')}}</div>
         </a>
       </li>
       
       <li class="menu-item @if(Route::is('users.trans.index'))) active @endif">
         <a href="{{ route('users.trans.index') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-cart-alt"></i>
           <div data-i18n="Basic">{{__('Orders history')}}</div>
         </a>
       </li>
       <li class="menu-item @if(Route::is('users.profile'))) active @endif">
         <a href="{{ route('users.profile') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-user"></i>
           <div data-i18n="Basic">{{__('Profile')}}</div>
         </a>
       </li>
-    @endif
       <li class="menu-item">
         <a href="{{ route('logout') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-collection"></i>
+          <i class="menu-icon tf-icons bx bxs-log-out-circle"></i>
           <div data-i18n="Basic">{{__('Logout')}}</div>
         </a>
       </li>
+    @endif
     </ul>
   @endif
 </aside>

@@ -107,6 +107,13 @@ return [
     */
 
     'faker_locale' => 'en_US',
+    'available_locales' => [
+        'English' => 'en',
+        'Russian' => 'ru',
+        'Spanish' => 'es',
+        'French' => 'fr',
+        'German ' => 'de',
+    ],
 
     /*
     |--------------------------------------------------------------------------

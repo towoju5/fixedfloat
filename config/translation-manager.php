@@ -64,7 +64,6 @@ return [
         '@choice',
         '__',
         '$trans.get',
-        'woju'
     ],
 
 ];

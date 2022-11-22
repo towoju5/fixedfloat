@@ -19,6 +19,9 @@ class UserController extends Controller
         if($request->ajax())
         {
             return DataTables::eloquent($users)
+                ->addColumn('customer', function($data) {
+                    return ucwords(strtolower($data->name));
+                })
                 ->addColumn('date', function($data) {
                     return show_datetime($data->created_at);
                 })

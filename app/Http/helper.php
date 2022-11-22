@@ -74,7 +74,7 @@ if (!function_exists('settings')) {
       }
 
       $result = Settings::where('key', $key)->first();
-      if(!empty($result) && count($result) > 0) :
+      if(!empty($result)) :
          return $result->value;
       endif;
 
@@ -299,9 +299,9 @@ if (!function_exists('save_order')) {
    /**
     * return uuid()
     */
-   function save_order($data) : void
+   function save_order($data)
    {
-      Order::create([
+      $save = Order::create([
          'user_id'         => auth()->id(),
          'order_id'        => $data['id'],
          'from_currency'   => $data['from']['currency'],
@@ -320,6 +320,7 @@ if (!function_exists('save_order')) {
          'order_reg'       => Carbon::parse($data['reg'])->format('Y-m-d H:i'),
          'order_expiration'=> Carbon::parse($data['expiration'])->format('Y-m-d H:i'), // time stamp,
       ]);
+      return $save;
    }
 }
 

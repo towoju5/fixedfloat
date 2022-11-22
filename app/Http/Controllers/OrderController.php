@@ -126,42 +126,54 @@ class OrderController extends Controller
 
     public function createOrder(Request $request)
     {
-        // $this->validate($request, [
-        //     "fromCurrency"  =>  "required",
-        //     "toCurrency"    =>  "required",
-        //     "toAddress"     =>  "required",
-        //     "type"          =>  "required",
-        //     "fromQty"       =>  "required",
-        // ]);
+        $this->validate($request, [
+            "fromCurrency"  =>  "required",
+            "toCurrency"    =>  "required",
+            "toAddress"     =>  "required",
+            "type"          =>  "required",
+            "fromQty"       =>  "required",
+        ]);
 
         $pro = $this->float;
         $data = [
-            "fromCurrency"  =>  "BTC", //$request->fromCurrency,
-            "toCurrency"    =>  "BTC", //$request->toCurrency,
-            "toAddress"     =>  "bc1q7t2qjqcahc535jdwpx8hvygsav0rcrfkyky6xt", //$request->toAddress,
-            "fromQty"       =>  "1", //$request->fromQty,
-            "toQty"         =>  "0.5", //$this->charges($request->fromQty),
-            "type"          =>  "fixed", //$request->type,
+            "fromCurrency"  =>  $request->fromCurrency,
+            "toCurrency"    =>  $request->toCurrency,
+            "toAddress"     =>  $request->toAddress,
+            "fromQty"       =>  $request->fromQty,
+            "toQty"         =>  $this->charges($request->fromQty),
+            "type"          =>  $request->type,
         ];
         $response = $pro->createOrder($data);
+        // \Log::info($response);
         if ($response['code'] != 0 OR strtolower($response['msg']) != 'ok') {
             return get_error_response($response);
         }
         $data = $response['data'];
         $saveOrder = save_order($data);
         return $response;
+        echo json_encode([
+            $saveOrder->order_id
+        ]); exit;
+        return response()->json([
+            'code' => 0,
+            'msg' => 'OK',
+            'data' => [
+              'id' => $saveOrder->order_id
+            ]
+        ], 200);
     }
 
     public function getOrder(Request $request, $id)
     {
         $pro = $this->float;
-        $order= Order::find($id);
-        $data = [
-            'id'    => $order->order_id,
-            'token' => $order->order_token
-        ];
-        $response = $pro->getOrder($data);
-        return $response;
+        $order= Order::where('order_id', $id)->first();
+        // $data = [
+        //     'id'    => $order->order_id,
+        //     'token' => $order->order_token
+        // ];
+        // $response = $pro->getOrder($data);
+        // return $response;
+        return view('order', compact('order'));
     }
 
     public function getPrice(Request $request)
@@ -181,15 +193,16 @@ class OrderController extends Controller
      * Calculate the attractable charges for this transaction.
      * @return toQty as float
      */
-    public function charges(Request $request) : float
+    public function charges($fromQty) : float
     {
-        $getCharges = get_commission($request->fromQty);
-        $toQty = $request->fromQty - $getCharges;
+        $getCharges = get_commission($fromQty);
+        $toQty = $fromQty - $getCharges;
         return floatval($toQty);
     }
 
     public function cron()
     {
+        $pro = $this->float;
         $orders = Order::where('status', 0)->get();
         foreach ($orders as $key => $order) {
             $data = [

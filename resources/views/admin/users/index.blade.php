@@ -63,21 +63,23 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card p-3">
-                        <table class="table px-1" id="dataTable">
-                            <thead>
-                                <tr>
-                                    <th>{{__('S/N')}}</th>
-                                    <th>{{__('Customer Name')}}</th>
-                                    <th>{{__('Customer Email')}}</th>
-                                    <th>{{__('Wallet Balance')}}</th>
-                                    <th>{{__('affiliate ID')}}</th>
-                                    <th>{{__('Joined')}}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table px-1" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>{{__('S/N')}}</th>
+                                        <th>{{__('Customer Name')}}</th>
+                                        <th>{{__('Customer Email')}}</th>
+                                        <th>{{__('Wallet Balance')}}</th>
+                                        <th>{{__('affiliate ID')}}</th>
+                                        <th>{{__('Joined')}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+    
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -110,7 +112,7 @@
                     data: 'id'
                     },
                     {
-                        data: 'name'
+                        data: 'customer'
                     },
                     {
                         data: 'email'
