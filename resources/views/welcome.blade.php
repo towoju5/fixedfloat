@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>FixedFloat | Instant cryptocurrency exchange</title>
-    <meta name="title" content="FixedFloat | Instant cryptocurrency exchange" />
+    <title>{{ settings('website_title') }} | Instant cryptocurrency exchange</title>
+    <meta name="title" content="{{ settings('website_title') }} | Instant cryptocurrency exchange" />
     <meta
       property="og:title"
-      content="FixedFloat | Instant cryptocurrency exchange"
+      content="{{ settings('website_title') }} | Instant cryptocurrency exchange"
     />
     <meta
       name="description"
@@ -16,20 +16,20 @@
       property="og:description"
       content="Instant cryptocurrency exchange with Lightning Network! Best rates and large volumes of currencies. Try now!"
     />
-    <meta property="og:site_name" content="FixedFloat" />
-    <meta property="og:url" content="{{ url('/') }}/index.html" />
-    <meta property="twitter:site" content="@FixedFloat" />
-    <meta property="twitter:creator" content="@FixedFloat" />
-    <meta property="twitter:domain" content="fixedfloat.com" />
+    <meta property="og:site_name" content="{{ settings('website_title') }}" />
+    <meta property="og:url" content="{{ url('/') }}/" />
+    <meta property="twitter:site" content="@{{ settings('website_title') }}" />
+    <meta property="twitter:creator" content="@{{ settings('website_title') }}" />
+    <meta property="twitter:domain" content="{{ settings('website_title') }}.com" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta property="og:image" content="{{ url('/') }}/assets/images/public/ogimage.jpg" />
-    <meta name="title" content="FixedFloat | Instant cryptocurrency exchange" />
+    <meta name="title" content="{{ settings('website_title') }} | Instant cryptocurrency exchange" />
     <meta
       property="og:title"
-      content="FixedFloat | Instant cryptocurrency exchange"
+      content="{{ settings('website_title') }} | Instant cryptocurrency exchange"
     />
     <meta
       property="og:description"
@@ -201,11 +201,11 @@
                     <li class="menu-head"><span>Account</span></li>
                     <li><a href="{{ url('login') }}">Sign in</a></li>
                     <li><a href="{{ url('register') }}">Sign up</a></li>
-                    <li class="menu-head"><span>FixedFloat</span></li>
+                    <li class="menu-head"><span>{{ settings('website_title') }}</span></li>
                     <li><a href="{{ url('page/about') }}">About</a></li>
                     <li><a href="{{ url('page/blog') }}">Blog</a></li>
                     <li><a href="{{ url('page/faq') }}">FAQ</a></li>
-                    <li><a href="{{ url('page/api') }}">API</a></li>
+                    <!--<li><a href="{{ url('page/api') }}">API</a></li>-->
                     <li><a href="{{ url('page/support') }}">Support</a></li>
                     <li><a href="{{ url('page/affiliate') }}">Affiliate program</a></li>
                   </ul>
@@ -213,7 +213,7 @@
               </nav>
             </div>
             <nav class="clrfix">
-              <a href="{{ url('/') }}/index.html" id="logo" class="logo">
+              <a href="{{ url('/') }}/" id="logo" class="logo">
                 <span
                   class="logo-text-fixed"
                   id="logo_text_from"
@@ -238,8 +238,15 @@
                 ></span>
               </a>
               <div class="nav userbar hoverhl">
+                @if(auth()->check())
+                <button class="btn-text" onclick="window.location.href='{{ url('user/orders') }}'">My Account</button>
+                <button class="btn-text" onclick="window.location.href='{{ route('logout') }}'">Logout</button>
+                @else
                 <button class="btn-text" id="header_signin">Sign in</button>
                 <button class="btn-text" id="header_signup">Sign up</button>
+                @endif
+                {{-- <button class="btn-text" id="header_signin">Sign in</button>
+                <button class="btn-text" id="header_signup">Sign up</button> --}}
               </div>
               <div class="loc hoverhl">
                 <a class="menu-focus-btn" tabindex="0"
@@ -284,7 +291,7 @@
                 <li><a href="{{ url('page/about') }}">About</a></li>
                 <li><a href="{{ url('page/blog') }}">Blog</a></li>
                 <li><a href="{{ url('page/faq') }}">FAQ</a></li>
-                <li><a href="{{ url('page/api') }}">API</a></li>
+                <!--<li><a href="{{ url('page/api') }}">API</a></li>-->
                 <li><a href="{{ url('page/support') }}">Support</a></li>
               </ul>
             </nav>
@@ -311,31 +318,25 @@
               ><i class="bghl"></i>
             </nav>
             <div class="auth-outer" id="auth_layouts">
-              <form class="auth-layout" id="layout_forgot">
+              <form class="auth-layout" id="layout_forgot" method="POST" action="{{ route('password.email') }}">
+                @csrf
                 <h4>{{__('Forgot Password')}}?</h4>
                 <div class="input-dyn">
                   <input name="email" required type="text" value="" />
                   <label for="email">{{__('Email')}}</label>
                   <sub class="error">{{__('Email entered is not a valid email')}}</sub>
                 </div>
-                <div
-                  class="auth-geetest"
-                  id="auth_reset_captcha"
-                  data-loading="Loading CAPTCHA..."
-                ></div>
                 <div class="auth-success" id="auth_reset_success">
                   Reset request successfully sent. You will receive a
                   confirmation e-mail if this account has been registered.
                 </div>
-                <div class="auth-error" id="auth_reset_captcha_error">
-                  Invalid CAPTCHA. Try again
-                </div>
+                
                 <div class="auth-error" id="auth_reset_error">
                   User with this email is not registered on the site.
                 </div>
                 <div class="auth-wrap-btn">
-                  <button class="btn submit bghl" id="auth_reset_btn" disabled>
-                    Reset password
+                  <button class="btn submit bghl" id="oauth_reset_btn">
+                    {{__('Reset password')}}
                   </button>
                 </div>
                 <div class="auth-wrap-btn">
@@ -344,20 +345,21 @@
                     type="button"
                     data-layout="signin"
                   >
-                    Back to Sign in
+                    {{__('Back to Sign in')}}
                   </button>
                 </div>
               </form>
-              <form class="auth-layout" id="layout_signin">
-                <h4>Welcome to FixedFloat</h4>
+              <form class="auth-layout" method="POST" id="layout_signin" action="{{ route('login') }}">
+                @csrf
+                <h4>Welcome to {{ settings('website_title') }}</h4>
                 <div class="input-dyn">
                   <input name="email" required type="text" value="" />
-                  <label for="email">Email</label>
+                  <label for="email">{{__('Email')}}</label>
                   <sub class="error">Email entered is not a valid email</sub>
                 </div>
                 <div class="input-dyn">
-                  <input name="pswd" required type="password" value="" />
-                  <label for="pswd">Password</label>
+                  <input name="password" required type="password" value="" />
+                  <label for="password">{{__('Password')}}</label>
                   <sub class="error">Password is empty</sub>
                 </div>
                 <div class="auth-forgot-wrap">
@@ -367,64 +369,54 @@
                     id="nav_forgot"
                     data-layout="forgot"
                   >
-                    Forgot password
+                    {{__('Forgot password')}}
                   </button>
-                </div>
-                <div
-                  class="auth-geetest"
-                  id="signin_captcha"
-                  data-loading="Loading CAPTCHA..."
-                ></div>
-                <div class="auth-error" id="signin_captcha_error">
-                  Invalid CAPTCHA. Try again
                 </div>
                 <div class="auth-error" id="auth_error">
                   Invalid email or password
                 </div>
                 <div class="auth-wrap-btn">
-                  <button class="btn submit bghl" id="auth_signin" disabled>
-                    Sign in
+                  <button class="btn submit bghl" id="iauth_signin" type="submit">
+                    {{__('Sign in')}}
                   </button>
                 </div>
               </form>
-              <form class="auth-layout" id="layout_signup">
-                <h4>Join to FixedFloat</h4>
+              <form class="auth-layout" method="POST" id="layout_signup" action="{{ route('register') }}">
+                @csrf
+                <h4>Join to {{ settings('website_title') }}</h4>
                 <div class="input-dyn">
-                  <input name="email" required type="text" value="" />
-                  <label for="email">Email</label>
-                  <sub class="error">Email entered is not a valid email</sub>
+                    <input name="name" required type="text" value="" />
+                    <label for="name">{{__('Name')}}</label>
                 </div>
                 <div class="input-dyn">
-                  <input name="pswd" required type="password" value="" />
-                  <label for="pswd">Password</label>
-                  <sub class="error"
-                    >Password must contain one uppercase, one lowercase, one
-                    number, one special character, and be at least 6 characters
-                    long.</sub
-                  >
+                    <input name="email" required type="text" value="" />
+                    <label for="email">{{__('Email')}}</label>
+                    <sub class="error">Email entered is not a valid email</sub>
                 </div>
                 <div class="input-dyn">
-                  <input name="repswd" required type="password" value="" />
-                  <label for="repswd">Confirm Password</label>
-                  <sub class="error">Passwords do not match.</sub>
-                </div></div>
+                    <input name="pswd" required type="password" value="" />
+                    <label for="pswd">{{__('Password')}}</label>
+                    <sub class="error">Password must contain one uppercase, one lowercase, one
+                        number, one special character, and be at least 6 characters
+                        long.</sub>
+                </div>
+                <div class="input-dyn">
+                    <input name="password_confirmation" required type="password" value="" />
+                    <label for="repswd">{{__('Confirm Password')}}</label>
+                    <sub class="error">Passwords do not match.</sub>
+                </div>
                 <div class="auth-error" id="auth_signup_error">
-                  An account with this email already exists.
-                  <button
-                    class="btn-text auth-nav-btn"
-                    type="button"
-                    data-layout="forgot"
-                    style="color: inherit"
-                  >
-                    Forgot password?
-                  </button>
+                    An account with this email already exists.
+                    <button class="btn-text auth-nav-btn" type="button" data-layout="forgot" style="color: inherit">
+                        {{__('Forgot password')}}?
+                    </button>
                 </div>
                 <div class="auth-wrap-btn">
-                  <button class="btn submit bghl" id="auth_signup" disabled>
-                    Sign up
-                  </button>
+                    <button class="btn submit bghl" id="iauth_signup">
+                        {{__('Sign up')}}
+                    </button>
                 </div>
-              </form>
+            </form>
             </div>
           </div>
         </template>
@@ -665,7 +657,7 @@
                     <input
                       class="input-amount"
                       type="text"
-                      value=""
+                      value="0.00042687"
                       id="select_amount_from"
                       data-dir="from"
                       maxlength="18"
@@ -978,9 +970,18 @@
                 >
               </div>
               <div class="exchange-button center clrfix">
-                <button id="exchange_submit" class="exchange-submit disabled">
-                  <span>Exchange now</span>
-                </button>
+                    <button id="exchange_submit" class="exchange-submit disabled">
+                      <span>Exchange now</span>
+                    </button>
+                <!--@if(auth()->check())-->
+                <!--<button id="exchange_submit" class="exchange-submit disabled">-->
+                <!--  <span>Exchange now</span>-->
+                <!--</button>-->
+                <!--@else-->
+                <!--<button onclick="alert('Please Login')" class="exchange-submit">-->
+                <!--  <span>Please Login</span>-->
+                <!--</button>-->
+                <!--@endif-->
               </div>
             </form>
           </div>
@@ -1002,7 +1003,7 @@
                 init: false,
                 lock: false,
                 type: _typeExchange.val(),
-                from: "",
+                from: "0.00042687",
                 to: "",
                 // usd: 0,
                 usd: { from: 0, to: 0 },
@@ -1527,7 +1528,7 @@
                             html:
                               '<div class="popup-content fix-width2">' +
                               '<h3 style="margin-bottom: 1.3em;">Important Notice</h3>' +
-                              '<p style="text-align: center;margin-bottom: 0.2em;">U.S. persons cannot make an exchange on FixedFloat.com</p>' +
+                              '<p style="text-align: center;margin-bottom: 0.2em;">U.S. persons cannot make an exchange on </p>' +
                               '<div class="popup-ctrl"><span class="btn submit popup-close-btn bghl">I understand</span></div></div>',
                           }).show();
                         }
@@ -2315,35 +2316,35 @@
                   target="_blank"
                   class="svgreviews tw"
                   title="twitter.com"
-                  href="https://twitter.com/fixedfloat"
+                  href="https://twitter.com/{{ settings('website_title') }}"
                 ></a>
                 <a
                   rel="noopener noreferrer"
                   target="_blank"
                   class="svgreviews tg"
                   title="Telegram"
-                  href="https://t.me/FixedFloat"
+                  href="https://t.me/{{ settings('website_title') }}"
                 ></a>
                 <a
                   rel="noopener noreferrer"
                   target="_blank"
                   class="svgreviews medium"
                   title="medium.com"
-                  href="https://medium.com/fixedfloat"
+                  href="https://medium.com/{{ settings('website_title') }}"
                 ></a>
                 <a
                   rel="noopener noreferrer"
                   target="_blank"
                   class="svgreviews instagram"
                   title="instagram.com"
-                  href="https://www.instagram.com/fixedfloat/"
+                  href="https://www.instagram.com/{{ settings('website_title') }}/"
                 ></a>
                 <a
                   rel="noopener noreferrer"
                   target="_blank"
                   class="svgreviews reddit"
                   title="reddit.com"
-                  href="https://www.reddit.com/user/FixedFloat/"
+                  href="https://www.reddit.com/user/{{ settings('website_title') }}/"
                 ></a>
                 <a
                   rel="noopener noreferrer"
@@ -2357,14 +2358,14 @@
                   target="_blank"
                   class="svgreviews bestchange"
                   title="bestchange.com"
-                  href="https://www.bestchange.com/fixedfloat-exchanger.html"
+                  href="https://www.bestchange.com/{{ settings('website_title') }}-exchanger"
                 ></a>
                 <a
                   rel="noopener noreferrer"
                   target="_blank"
                   class="svgreviews trustpilot"
                   title="trustpilot.com"
-                  href="https://www.trustpilot.com/review/fixedfloat.com"
+                  href="https://www.trustpilot.com/review/{{ settings('website_title') }}.com"
                 ></a>
               </p>
             </li>
@@ -2381,7 +2382,7 @@
             </li>
           </ul>
           <div class="mini-faq-more">
-            <a href="{{ url('/') }}/faq.html"
+            <a href="{{ url('/') }}/faq"
               ><span>Go to page FAQ</span> <i class="ico arrow-forward"></i
             ></a>
           </div>
@@ -2393,7 +2394,7 @@
           <div class="blog-articles articles-news blog-index">
             <article class="blog-post blog-post-main">
               <div class="blog-post-img">
-                <a href="{{ url('/') }}/blog/news/weekly-2022-11-19.html"
+                <a href="{{ url('/') }}/blog/news/weekly-2022-11-19"
                   ><img
                     src="{{ url('/') }}/media/thumbs/blog/news/3rd%20week%20of%20November/Nov-news-11-22_03_w700.jpg"
                     alt=""
@@ -2401,7 +2402,7 @@
               </div>
               <div class="blog-post-body">
                 <header class="blog-post-head">
-                  <a href="{{ url('/') }}/blog/news/weekly-2022-11-19.html"
+                  <a href="{{ url('/') }}/blog/news/weekly-2022-11-19"
                     >News of cryptocurrencies of the 3rd week of November
                     2022</a
                   >
@@ -2419,7 +2420,7 @@
             </article>
             <article class="blog-post">
               <div class="blog-post-img">
-                <a href="{{ url('/') }}/blog/news/ftx-crash-reasons-fallout.html"
+                <a href="{{ url('/') }}/blog/news/ftx-crash-reasons-fallout"
                   ><img
                     src="{{ url('/') }}/media/thumbs/blog/news/ftx/FF-FTX-final_w700.jpg"
                     alt=""
@@ -2427,7 +2428,7 @@
               </div>
               <div class="blog-post-body">
                 <header class="blog-post-head">
-                  <a href="{{ url('/') }}/blog/news/ftx-crash-reasons-fallout.html"
+                  <a href="{{ url('/') }}/blog/news/ftx-crash-reasons-fallout"
                     >FTX crash: reasons and fallout</a
                   >
                   <div class="blog-time">
@@ -2438,7 +2439,7 @@
             </article>
             <article class="blog-post">
               <div class="blog-post-img">
-                <a href="{{ url('/') }}/blog/news/weekly-2022-11-12.html"
+                <a href="{{ url('/') }}/blog/news/weekly-2022-11-12"
                   ><img
                     src="{{ url('/') }}/media/thumbs/blog/news/2nd%20week%20of%20November/Nov-news-11-22_02_w700.jpg"
                     alt=""
@@ -2446,7 +2447,7 @@
               </div>
               <div class="blog-post-body">
                 <header class="blog-post-head">
-                  <a href="{{ url('/') }}/blog/news/weekly-2022-11-12.html"
+                  <a href="{{ url('/') }}/blog/news/weekly-2022-11-12"
                     >News of cryptocurrencies of the 2nd week of November
                     2022</a
                   >
@@ -2458,7 +2459,7 @@
             </article>
             <article class="blog-post">
               <div class="blog-post-img">
-                <a href="{{ url('/') }}/blog/news/weekly-2022-11-05.html"
+                <a href="{{ url('/') }}/blog/news/weekly-2022-11-05"
                   ><img
                     src="{{ url('/') }}/media/thumbs/blog/news/1st%20week%20of%20November/Nov-news-11-22_01_w700.jpg"
                     alt=""
@@ -2466,7 +2467,7 @@
               </div>
               <div class="blog-post-body">
                 <header class="blog-post-head">
-                  <a href="{{ url('/') }}/blog/news/weekly-2022-11-05.html"
+                  <a href="{{ url('/') }}/blog/news/weekly-2022-11-05"
                     >News of cryptocurrencies of the 1st week of November
                     2022</a
                   >
@@ -2478,7 +2479,7 @@
             </article>
             <article class="blog-post">
               <div class="blog-post-img">
-                <a href="{{ url('/') }}/blog/news/weekly-2022-10-29.html"
+                <a href="{{ url('/') }}/blog/news/weekly-2022-10-29"
                   ><img
                     src="{{ url('/') }}/media/thumbs/blog/news/Oct-news-29-22_05_w700.jpg"
                     alt=""
@@ -2486,7 +2487,7 @@
               </div>
               <div class="blog-post-body">
                 <header class="blog-post-head">
-                  <a href="{{ url('/') }}/blog/news/weekly-2022-10-29.html"
+                  <a href="{{ url('/') }}/blog/news/weekly-2022-10-29"
                     >News of cryptocurrencies of the 5th week of October 2022</a
                   >
                   <div class="blog-time">
@@ -2577,9 +2578,9 @@
         <div class="cookie-cell">
           <p>
             {{__('We use cookies to provide the best experience on our website. By
-            using FixedFloat.com you agree to')}}
-            <a href="{{ url('/') }}/privacy-policy.html">{{__('Privacy Policy')}}</a> and
-            <a href="{{ url('/') }}/terms-of-service.html">{{__('Terms of Service')}}</a>.
+            using')}} {{ url('/') }} {{ __('you agree to') }}
+            <a href="{{ url('/') }}/privacy-policy">{{__('Privacy Policy')}}</a> and
+            <a href="{{ url('/') }}/terms-of-service">{{__('Terms of Service')}}</a>.
           </p>
         </div>
         <div class="cookie-cell clrfix">

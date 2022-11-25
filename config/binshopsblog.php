@@ -14,7 +14,7 @@ return [
 
     'include_default_routes' => true, // set to false to not include routes.php for BinshopsReaderController and admin related routes. Default: true. If you disable this, you will have to manually copy over the data from routes.php and add it to your web.php.
 
-    'blog_prefix' => "blog", // used in routes.php. If you want to your http://yoursite.com/latest-news (or anything else), then enter that here. Default: blog
+    'blog_prefix' => "latest-news", // used in routes.php. If you want to your http://yoursite.com/latest-news (or anything else), then enter that here. Default: blog
     'admin_prefix' => "blog_admin", // similar to above, but used for the admin panel for the blog. Default: blog_admin
 
     'use_custom_view_files' => false, // set to false to disable the use of being able to make blog posts include a view from resources/views/custom_blog_posts/*.blade.php. Default: false. Set to true to use this feature. Default: false
@@ -134,7 +134,7 @@ return [
         //      'disabled' (turn comments off)
         'type_of_comments_to_show' => 'built_in', // default: built_in
 
-        'max_num_of_comments_to_show' => 1000, // max num of comments to show on a single blog post. Set to a lower number for smaller page sizes. No comment pagination is built in yet.
+        'max_num_of_comments_to_show' => 5, // max num of comments to show on a single blog post. Set to a lower number for smaller page sizes. No comment pagination is built in yet.
 
         // should we save the IP address in the database?
         'save_ip_address' => true, // Default: true

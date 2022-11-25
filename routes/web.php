@@ -12,6 +12,7 @@ use App\Http\Controllers\BinanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\TransactionController;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\App;
@@ -82,13 +83,18 @@ Route::group(['middleware' => 'web'], function () {
         });
     });
 
-    Route::get('home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    // Route::get('home', [HomeController::class, 'index'])->name('home');
 
     Route::get('logout', function () {
         // session_destroy();
         Auth::logout();
         return redirect(route('home'))->with('success', "You've been successfully logged out");
     })->name('logout');
+
+    Route::group(['prefix' => 'page', 'as' => 'page.'], function () {
+        Route::get('blog', [PageController::class, 'blog'])->name('blog');
+        Route::get('{page}', [PageController::class, 'page'])->name('about');
+    });
 
 
     /**

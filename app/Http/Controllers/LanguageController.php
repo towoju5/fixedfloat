@@ -14,7 +14,8 @@ class LanguageController extends Controller
     public function switchLang($locale)
     {
         // available language in template array
-        $availLocale = ['en', 'fr', 'de', 'pt', 'es'];
+        // $availLocale = ['en', 'fr', 'de', 'pt', 'es'];
+        $availLocale = config('app.available_locales');
         // check for existing language
         if (in_array($locale, $availLocale)) {
             app()->setLocale($locale);

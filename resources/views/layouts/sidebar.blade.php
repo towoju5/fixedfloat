@@ -63,6 +63,13 @@
         </a>
       </li>
 
+      <li class="menu-item @if(Route::is('binshopsblog.admin.index'))) active @endif">
+        <a href="{{ route('binshopsblog.admin.index') }}" class="menu-link">
+          <i class="menu-icon tf-icons bx bxs-coin"></i>
+          <div data-i18n="Basic">{{ __('Blog') }}</div>
+        </a>
+      </li>
+
       <li class="menu-item @if(Route::is('admin.orders.index'))) active @endif">
         <a href="{{ route('admin.orders.index') }}" class="menu-link">
           <i class="menu-icon tf-icons bx bxs-cart-alt"></i>

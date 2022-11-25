@@ -13,7 +13,15 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('mail');
+        // if(auth()->check()){
+        //     $user = auth()->user();
+        //     if($user->role == 'admin'){
+        //         return redirect(url('admin/orders'));
+        //     }
+        //     return redirect(url('admin/orders'));
+        // }
+        return redirect(url('/'));
+        // return view('mail');
     }
 
     /**

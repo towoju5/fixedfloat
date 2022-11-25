@@ -196,178 +196,254 @@
                 .buttonhl button:hover {
                     background-color: #f7931a;
                 }
-            </style>
-            <header id="header" class="ontop">
-                <div class="wrapper">
-                    <div class="left-menu-wrap" id="left_menu_wrap">
-                        <div id="left_menu_btn">
-                            <div><span></span><span></span><span></span></div>
-                        </div>
-                        <nav class="left-menu" id="left_menu">
-                            <section>
-                                <ul id="left_menu_content" class="menu linkhl">
-                                    <li class="menu-head"><span>Account</span></li>
-                                    <li><a href="//{{ url('/') }}/user/profile">Personal data</a></li>
-                                    <li><a href="//{{ url('/') }}/user/orders">Orders history</a></li>
-                                    <li><a href="//{{ url('/') }}/user/affiliate">Affiliate program</a></li>
-                                    <li><a class="signout" href="//{{ url('/') }}/user/signout"
-                                            data-confirm="Are you sure?">Sign out</a></li>
-                                    <li class="menu-head"><span>FixedFloat</span></li>
-                                    <li><a href="//{{ url('/') }}/about">About</a></li>
-                                    <li><a href="//{{ url('/') }}/blog">Blog</a></li>
-                                    <li><a href="//{{ url('/') }}/faq">FAQ</a></li>
-                                    <li><a href="//{{ url('/') }}/api">API</a></li>
-                                    <li><a href="//{{ url('/') }}/support">Support</a></li>
-                                </ul>
-                            </section>
-                        </nav>
-                    </div>
-                    <nav class="clrfix">
-                        <a href="//{{ url('/') }}/" id="logo" class="logo">
-                            <span class="logo-text-fixed" id="logo_text_from" data-value="btc"></span>
-                            <div class="ico"><span class="logo-arrow-from" id="logo_arrow_from"
-                                    data-value="btc"></span><span class="logo-arrow-to" id="logo_arrow_to"
-                                    data-value="eth"></span></div><span class="logo-text-float" id="logo_text_to"
-                                data-value="eth"></span>
-                        </a>
-                        <div class="nav userbar hoverhl">
-                            <a class="menu-focus-btn" tabindex="0">{{__('Account')}}</a>
-                            <ul class="menu-focus-opened hoverhl">
-                                <li><a href="//{{ url('/') }}/user/orders">{{__('Orders history')}}</a></li>
-                                <li><a href="//{{ url('/') }}/user/profile">{{__('Settings')}}</a></li>
-                                <li><a class="signout" href="//{{ url('/') }}/user/signout"
-                                        data-confirm="Are you sure?">{{__('Sign out')}}</a></li>
-                            </ul>
-                        </div>
-                        <div class="loc hoverhl">
-                            <a class="menu-focus-btn" tabindex="0">
-                                <div class="ui-select-value"><span>{{__('English')}}</span><i class="loc-img loc-en"></i></div>
-                            </a>
-                            <ul class="menu-focus-opened hoverhl">
-                                <li><a href="//{{ url('/') }}/en/order/2PVMPP"><span>English</span><i
-                                            class="loc-img loc-en"></i></a></li>
-                                <li><a href="//{{ url('/') }}/es/order/2PVMPP"><span>Español</span><i
-                                            class="loc-img loc-es"></i></a></li>
-                                <li><a href="//{{ url('/') }}/de/order/2PVMPP"><span>Deutsch</span><i
-                                            class="loc-img loc-de"></i></a></li>
-                                <li><a href="//{{ url('/') }}/fr/order/2PVMPP"><span>Français</span><i
-                                            class="loc-img loc-fr"></i></a></li>
-                                <li><a href="//{{ url('/') }}/pt/order/2PVMPP"><span>Português</span><i
-                                            class="loc-img loc-pt"></i></a></li>
-                                <li><a href="//{{ url('/') }}/ru/order/2PVMPP"><span>Русский</span><i
-                                            class="loc-img loc-ru"></i></a></li>
-                            </ul>
-                            <div class="shadow-body" tabindex="0"></div>
-                        </div>
-                        <ul class="nav menu hoverhl">
-                            <li><a href="//{{ url('/') }}/about">{{__('About')}}</a></li>
-                            <li><a href="//{{ url('/') }}/blog">{{__('Blog')}}</a></li>
-                            <li><a href="//{{ url('/') }}/faq">{{__('FAQ')}}</a></li>
-                            <li><a href="//{{ url('/') }}/api">{{__('API')}}</a></li>
-                            <li><a href="//{{ url('/') }}/support">{{__('Support')}}</a></li>
-                        </ul>
-                    </nav>
-                    <div class="shadow-body"></div>
+            </style><header id="header">
+          <div class="wrapper">
+            <div class="left-menu-wrap" id="left_menu_wrap">
+              <div id="left_menu_btn">
+                <div><span></span><span></span><span></span></div>
+              </div>
+              <nav class="left-menu" id="left_menu">
+                <section>
+                  <ul id="left_menu_content" class="menu linkhl">
+                    <li class="menu-head"><span>Account</span></li>
+                    <li><a href="{{ url('login') }}">Sign in</a></li>
+                    <li><a href="{{ url('register') }}">Sign up</a></li>
+                    <li class="menu-head"><span>FixedFloat</span></li>
+                    <li><a href="{{ url('page/about') }}">About</a></li>
+                    <li><a href="{{ url('page/blog') }}">Blog</a></li>
+                    <li><a href="{{ url('page/faq') }}">FAQ</a></li>
+                    <li><a href="{{ url('page/api') }}">API</a></li>
+                    <li><a href="{{ url('page/support') }}">Support</a></li>
+                    <li><a href="{{ url('page/affiliate') }}">Affiliate program</a></li>
+                  </ul>
+                </section>
+              </nav>
+            </div>
+            <nav class="clrfix">
+              <a href="{{ url('/') }}/" id="logo" class="logo">
+                <span
+                  class="logo-text-fixed"
+                  id="logo_text_from"
+                  data-value="eth"
+                ></span>
+                <div class="ico">
+                  <span
+                    class="logo-arrow-from"
+                    id="logo_arrow_from"
+                    data-value="eth"
+                  ></span
+                  ><span
+                    class="logo-arrow-to"
+                    id="logo_arrow_to"
+                    data-value="btc"
+                  ></span>
                 </div>
-            </header>
-            <template id="auth">
-                <div class="popup-auth">
-                    <nav class="auth-nav" id="auth_nav">
-                        <button type="button" id="nav_signin" class="auth-nav-btn" data-layout="signin">{{__('Sign
-                            in')}}</button><button type="button" id="nav_signup" class="auth-nav-btn"
-                            data-layout="signup">{{__('Sign up')}}</button><i class="bghl"></i>
-                    </nav>
-                    <div class="auth-outer" id="auth_layouts">
-                        <form class="auth-layout" id="layout_forgot">
-                            <h4>{{__('Forgot Password')}}?</h4>
-                            <div class="input-dyn">
-                                <input name="email" required="" type="text" value="">
-                                <label for="email">{{__('Email')}}</label>
-                                <sub class="error">{{__('Email entered is not a valid email')}}</sub>
-                            </div>
-                            <div class="auth-geetest" id="auth_reset_captcha" data-loading="Loading CAPTCHA..."></div>
-                            <div class="auth-success" id="auth_reset_success">{{__('Reset request successfully sent. You will
-                                receive a confirmation e-mail if this account has been registered.')}}</div>
-                            <div class="auth-error" id="auth_reset_captcha_error">{{__('Invalid CAPTCHA. Try again')}}</div>
-                            <div class="auth-error" id="auth_reset_error">{{__('User with this email is not registered on the
-                                site')}}.</div>
-                            <div class="auth-wrap-btn">
-                                <button class="btn submit bghl" id="auth_reset_btn" disabled="">{{__('Reset password')}}</button>
-                            </div>
-                            <div class="auth-wrap-btn">
-                                <button class="btn-text auth-nav-btn" type="button" data-layout="signin">{{__('Back to Sign
-                                    in')}}</button>
-                            </div>
-                        </form>
-                        <form class="auth-layout" id="layout_signin">
-                            <h4>Welcome to FixedFloat</h4>
-                            <div class="input-dyn">
-                                <input name="email" required="" type="text" value="">
-                                <label for="email">{{__('Email')}}</label>
-                                <sub class="error">{{__('Email entered is not a valid email')}}</sub>
-                            </div>
-                            <div class="input-dyn">
-                                <input name="pswd" required="" type="password" value="">
-                                <label for="pswd">{{__('Password')}}</label>
-                                <sub class="error">{{__('Password is empty')}}</sub>
-                            </div>
-                            <div class="auth-forgot-wrap">
-                                <button class="btn-text hl auth-nav-btn" type="button" id="nav_forgot"
-                                    data-layout="forgot">{{__('Forgot password')}}</button>
-                            </div>
-                            <div class="auth-geetest" id="signin_captcha" data-loading="Loading CAPTCHA..."></div>
-                            <div class="auth-error" id="signin_captcha_error">{{__('Invalid CAPTCHA. Try again')}}</div>
-                            <div class="auth-error" id="auth_error">{{__('Invalid email or password')}}</div>
-                            <div class="auth-wrap-btn">
-                                <button class="btn submit bghl" id="auth_signin" disabled="">{{__('Sign in')}}</button>
-                            </div>
-                        </form>
-                        <form class="auth-layout" id="layout_signup">
-                            <h4>{{__('Join to')}} FixedFloat</h4>
-                            <div class="input-dyn">
-                                <input name="email" required="" type="text" value="">
-                                <label for="email">{{__('Email')}}</label>
-                                <sub class="error">{{__('Email entered is not a valid email')}}</sub>
-                            </div>
-                            <div class="input-dyn">
-                                <input name="pswd" required="" type="password" value="">
-                                <label for="pswd">{{__('Password')}}</label>
-                                <sub class="error">{{__('Password must contain one uppercase, one lowercase, one number, one
-                                    special character, and be at least 6 characters long.')}}</sub>
-                            </div>
-                            <div class="input-dyn">
-                                <input name="repswd" required="" type="password" value="">
-                                <label for="repswd">{{__('Confirm Password')}}</label>
-                                <sub class="error">{{__('Passwords do not match.')}}</sub>
-                            </div>
-                            <div class="auth-geetest" id="signup_captcha" data-loading="Loading CAPTCHA..."></div>
-                            <div class="auth-error" id="signup_captcha_error">{{(__'Invalid CAPTCHA. Try again')}}</div>
-                            <!-- <div class="auth-captcha">
-					<div id="auth_recaptcha" data-sitekey="6LfvYYUUAAAAAIyX9224ZI996PDDvrkUQtKb5WuY"></div>
-				</div> -->
-                            <div class="auth-error" id="signup_captcha_error" data-loading="Invalid CAPTCHA. Try again">
-                            </div>
-                            <div class="auth-error" id="auth_signup_error">{{__('An account with this email already exists.')}}
-                                <button class="btn-text auth-nav-btn" type="button" data-layout="forgot"
-                                    style="color: inherit;">{{(__'Forgot password')}}?</button></div>
-                            <div class="auth-wrap-btn">
-                                <button class="btn submit bghl" id="auth_signup" disabled="">{{(__'Sign up')}}</button>
-                            </div>
-                        </form>
-                    </div>
+                <span
+                  class="logo-text-float"
+                  id="logo_text_to"
+                  data-value="btc"
+                ></span>
+              </a>
+              <div class="nav userbar hoverhl">
+                @if(auth()->check())
+                <button class="btn-text" onclick="window.location.href='{{ url('user/orders') }}'">My Account</button>
+                <button class="btn-text" onclick="window.location.href='{{ route('logout') }}'">Logout</button>
+                @else
+                <button class="btn-text" id="header_signin">Sign in</button>
+                <button class="btn-text" id="header_signup">Sign up</button>
+                @endif
+              </div>
+              <div class="loc hoverhl">
+                <a class="menu-focus-btn" tabindex="0"
+                  ><div class="ui-select-value">
+                    <span>English</span><i class="loc-img loc-en"></i></div
+                ></a>
+                <ul class="menu-focus-opened hoverhl">
+                  <li>
+                    <a href="{{ url('lang/en') }}"
+                      ><span>English</span><i class="loc-img loc-en"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="{{ url('lang/es') }}"
+                      ><span>Español</span><i class="loc-img loc-es"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="{{ url('lang/de') }}"
+                      ><span>Deutsch</span><i class="loc-img loc-de"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="{{ url('lang/fr') }}"
+                      ><span>Français</span><i class="loc-img loc-fr"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="{{ url('lang/pt') }}"
+                      ><span>Português</span><i class="loc-img loc-pt"></i
+                    ></a>
+                  </li>
+                  <li>
+                    <a href="{{ url('lang/ru') }}"
+                      ><span>Русский</span><i class="loc-img loc-ru"></i
+                    ></a>
+                  </li>
+                </ul>
+                <div class="shadow-body" tabindex="0"></div>
+              </div>
+              <ul class="nav menu hoverhl">
+                <li><a href="{{ url('page/about') }}">About</a></li>
+                <li><a href="{{ url('page/blog') }}">Blog</a></li>
+                <li><a href="{{ url('page/faq') }}">FAQ</a></li>
+                <li><a href="{{ url('page/api') }}">API</a></li>
+                <li><a href="{{ url('page/support') }}">Support</a></li>
+              </ul>
+            </nav>
+            <div class="shadow-body"></div>
+          </div>
+        </header>
+        <template id="auth">
+          <div class="popup-auth">
+            <nav class="auth-nav" id="auth_nav">
+              <button
+                type="button"
+                id="nav_signin"
+                class="auth-nav-btn"
+                data-layout="signin"
+              >
+               {{__('Sign in')}}</button
+              ><button
+                type="button"
+                id="nav_signup"
+                class="auth-nav-btn"
+                data-layout="signup"
+              >
+                {{__('Sign up')}}</button
+              ><i class="bghl"></i>
+            </nav>
+            <div class="auth-outer" id="auth_layouts">
+              <form class="auth-layout" id="layout_forgot" method="POST" action="{{ route('password.email') }}">
+                @csrf
+                <h4>{{__('Forgot Password')}}?</h4>
+                <div class="input-dyn">
+                  <input name="email" required type="text" value="" />
+                  <label for="email">{{__('Email')}}</label>
+                  <sub class="error">{{__('Email entered is not a valid email')}}</sub>
                 </div>
-            </template>
+                <div class="auth-success" id="auth_reset_success">
+                  Reset request successfully sent. You will receive a
+                  confirmation e-mail if this account has been registered.
+                </div>
+                <div class="auth-error" id="auth_reset_error">
+                  User with this email is not registered on the site.
+                </div>
+                <div class="auth-wrap-btn">
+                  <button class="btn submit bghl" id="iauth_reset_btn">
+                    Reset password
+                  </button>
+                </div>
+                <div class="auth-wrap-btn">
+                  <button
+                    class="btn-text auth-nav-btn"
+                    type="button"
+                    data-layout="signin"
+                  >
+                    Back to Sign in
+                  </button>
+                </div>
+              </form>
+              <form class="auth-layout" method="POST" id="layout_signin" action="{{ route('login') }}">
+                @csrf
+                <h4>Welcome to {{ settings('website_title') }}</h4>
+                <div class="input-dyn">
+                  <input name="email" required type="text" value="" />
+                  <label for="email">{{__('Email')}}</label>
+                  <sub class="error">Email entered is not a valid email</sub>
+                </div>
+                <div class="input-dyn">
+                  <input name="password" required type="password" value="" />
+                  <label for="pswd">{{__('Password')}}</label>
+                  <sub class="error">Password is empty</sub>
+                </div>
+                <div class="auth-forgot-wrap">
+                  <button
+                    class="btn-text hl auth-nav-btn"
+                    type="button"
+                    id="nav_forgot"
+                    data-layout="forgot"
+                  >
+                    {{__('Forgot password')}}
+                  </button>
+                </div>
+                <div class="auth-error" id="auth_error">
+                  Invalid email or password
+                </div>
+                <div class="auth-wrap-btn">
+                  <button class="btn submit bghl" id="iauth_signin" type="submit">
+                    {{__('Sign in')}}
+                  </button>
+                </div>
+              </form>
+              <form class="auth-layout" method="POST" id="layout_signup" action="{{ route('register') }}">
+                @csrf
+                <h4>Join to {{ settings('website_title') }}</h4>
+                <div class="input-dyn">
+                  <input name="name" required type="text" value="" />
+                  <label for="name">{{__('Name')}}</label>
+                </div>
+                <div class="input-dyn">
+                  <input name="email" required type="text" value="" />
+                  <label for="email">{{__('Email')}}</label>
+                  <sub class="error">Email entered is not a valid email</sub>
+                </div>
+                <div class="input-dyn">
+                  <input name="password" required type="password" value="" />
+                  <label for="pswd">{{__('Password')}}</label>
+                  <sub class="error"
+                    >Password must contain one uppercase, one lowercase, one
+                    number, one special character, and be at least 6 characters
+                    long.</sub
+                  >
+                </div>
+                <div class="input-dyn">
+                  <input name="password_confirmation" required type="password" value="" />
+                  <label for="repswd">{{__('Confirm Password')}}</label>
+                  <sub class="error">Passwords do not match.</sub>
+                </div></div>
+                <div class="auth-error" id="auth_signup_error">
+                  An account with this email already exists.
+                  <button
+                    class="btn-text auth-nav-btn"
+                    type="button"
+                    data-layout="forgot"
+                    style="color: inherit"
+                  >
+                    {{__('Forgot password')}}?
+                  </button>
+                </div>
+                <div class="auth-wrap-btn">
+                  <button class="btn submit bghl" id="iauth_signup">
+                    {{__('Sign up')}}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </template>
             <div class="wrapper">
                 <section class="order-outer">
+                    @php $data = json_decode($order->raw_data); @endphp
+                    <!--{{ var_dump(json_decode($order->raw_data, true)) }}-->
                     <div class="order-body">
                         <section class="order-direction clrfix">
                             <div class="dir-from">
                                 <div class="dir-cont" data-value="btc">
                                     <div class="coin-ico svgcoin btc"></div>
-                                    <div class="coin-head">{{(__'You send')}}</div>
-                                    <div class="coin-value" id="order_send_value">0.01245621 BTC</div>
-                                    <div class="coin-address" title="bc1qwf29xlj9n3m99r8alkdf84tn32xjah7c029dn7">
-                                        bc1qwf29xlj9n3m99r8alkdf84tn32xjah7c029dn7</div>
+                                    <div class="coin-head">{{__('You send')}}</div>
+                                    <div class="coin-value" id="order_send_value">{{ $order->send_amount }} {{ $order->from_currency }}</div>
+                                    <div class="coin-address" title="{{ $data->from->address }}">
+                                        {{ $data->from->address }} </div>
                                 </div>
                             </div>
                             <div class="dir-arrow">
@@ -376,10 +452,10 @@
                             <div class="dir-to">
                                 <div class="dir-cont" data-value="eth">
                                     <div class="coin-ico svgcoin eth"></div>
-                                    <div class="coin-head">{{(__'You receive')}}</div>
-                                    <div class="coin-value" id="order_receive_value">0.1777313 ETH</div>
-                                    <div class="coin-address" title="0xb794f5ea0ba39494ce839613fffba74279579268">
-                                        0xb794f5ea0ba39494ce839613fffba74279579268</div>
+                                    <div class="coin-head">{{__('You receive')}}</div>
+                                    <div class="coin-value" id="order_receive_value">{{ $order->receive_amount }} {{ $order->to_currency }}</div>
+                                    <div class="coin-address" title="{{ $order->receive_address }}">
+                                        {{ $order->receive_address }}</div>
                                 </div>
                             </div>
                         </section>
@@ -397,17 +473,17 @@
                                                     src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQIAAAECAQMAAAAvgUsTAAAABlBMVEX///8AAABVwtN+AAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAjhJREFUaIHdmetxBCEMgz2zBVxJtE5JFMAMsSSbXB4FRNnZ3AO+++FghOyN+EfXc3A9Z+aHiJH3xms8a2BiWRH5FyNfE8oRTL/wgyjOixhnYVRBxiu5mYP5NeM3JTLCjddEY3PclpjMv5wbh2t5LAl8J4EgczpjzuC/56kFIXXI2H7cX/XDgPgU54VogwFjLX+R7z9PMP8wioufsbVwi/Yi8gskeyFgisLMfYVB6J0ToSxkwiFOHkJaueFH8G3z4LmiQI2YkgwjIrBsR7YARym3k04gTC0zYmtfYbqOIoatw8mLODw1cwsdoQpYSamVcyFoNCvnWhpCZnQzZidCbqYFglvr0ICGfI8ZsT79TbvPQes2VOEYERK4TQVHLvKW8HkRepMuvNloKWApnQ0RlW3SgodejZHPVjofgouEm9Um91XoB8/VQhOiCk7aNX4YV+P8CBoaVc77NdsWiI7q1JgQMgSSbKkDPZzuKK9tQmB56MwO/YFaNufMN9X2IbhIVeRQqUsU5K3DjDirc7G2VtU27HU6ETJqd//c4OnhTtcNHsTThRm9zqiCh+eQFNyJ0Kkp69k1Z2fkNCO4fzYb6CrVODJkceyI3U8y2KA56j6rTrjdDQtClwoD7SLYaP4LrvV0IbpLy4ZmP6HR8aN95USoe45rtHZPTr85NhtiqL+s2Jh/s1uEtoT6Aqs8qKavflgREG4sXgncUEW6w4uo/GPa9Tm6+kHgsiKYbsq/Ujc93aweuhPxj64PbSyrTUQh84EAAAAASUVORK5CYII="
                                                     alt=""></div>
                                             <div class="qr-switcher" data-count="2">
-                                                <label for="qr_type0"><span>{{(__'Address')}}</span></label>
-                                                <label for="qr_type1"><span>{{(__'With amount')}}</span></label>
+                                                <label for="qr_type0"><span>{{__('Address')}}</span></label>
+                                                <label for="qr_type1"><span>{{__('With amount')}}</span></label>
                                             </div>
                                         </div>
                                     </div>
                                     <section class="order-head-info" id="order_info">
                                         <div class="order-head-info-inner" id="order_info_inner">
                                             <div class="order-id-wrap">
-                                                <label>{{(__'Order ID')}}</label>
-                                                <div><span class="pseudo-hint-blue" data-copy="2PVMPP"
-                                                        data-hint="Copied"><span class="order-id hl">2PVMPP</span><i
+                                                <label>{{__('Order ID')}}</label>
+                                                <div><span class="pseudo-hint-blue" data-copy=" {{ $order->order_id }} "
+                                                        data-hint="Copied"><span class="order-id hl"> {{ $order->order_id }} </span><i
                                                             class="ico copy"></i></span></div>
                                             </div>
                                             <div class="order-time new">
@@ -420,22 +496,20 @@
                                             </div>
                                             <div>
                                                 <label>Order type</label>
-                                                <div><span class="order-type">Float rate</span></div>
+                                                <div><span class="order-type"> {{ $order->order_type }} </span></div>
                                             </div>
                                             <div>
                                                 <label>Creation Time</label>
-                                                <div><time id="order_time_creation" timestamp="1669051661">11/21/2022
-                                                        6:27 PM</time></div>
+                                                <div><time id="order_time_creation" timestamp="1669051661"> {{ date('M j, Y g:i A', strtotime($order->order_reg)) }} </time></div>
                                             </div>
                                             <div class="none">
                                                 <label>Received Time</label>
-                                                <div><time id="order_time_tx" timestamp="">01/01/1970 1:00 AM</time>
+                                                <div><time id="order_time_tx" timestamp="">{{ date('F j, Y g:i A', strtotime($order->order_reg)) }} </time>
                                                 </div>
                                             </div>
                                             <div class="none">
                                                 <label>Completed Time</label>
-                                                <div><time id="order_time_competed" timestamp="">01/01/1970 1:00
-                                                        AM</time></div>
+                                                <div><time id="order_time_competed" timestamp="">{{ date('F j, Y g:i A', strtotime($order->order_expiration)) }} </time></div>
                                             </div>
                                         </div>
                                     </section>
@@ -443,22 +517,22 @@
 
                                         <div class="order-data-details">
                                             <div class="order-p-wrap">
-                                                <p class="order-p-amount">{{(__'Send')}} <b class="order-amount pseudo-hint-blue"
+                                                <p class="order-p-amount">{{__('Send')}} <b class="order-amount pseudo-hint-blue"
                                                         data-hint="Copied" data-copy="0.01245621"
-                                                        data-value="btc">0.01245621 BTC</b> {{(__'to the address')}}:</p>
+                                                        data-value="btc">{{ $order->send_amount }} {{ $order->from_currency }}</b> {{__('to the address')}}:</p>
                                                 <p class="order-p-address"><span class="order-address-wrap"><b
                                                             class="order-address order-address-from pseudo-hint-blue"
-                                                            data-copy="bc1qwf29xlj9n3m99r8alkdf84tn32xjah7c029dn7"
+                                                            data-copy="{{ $data->from->address }}"
                                                             data-hint="Copied"
-                                                            title="bc1qwf29xlj9n3m99r8alkdf84tn32xjah7c029dn7"><i>bc1qw</i><i>f29x</i><i>lj9n</i><i>3m99</i><i>r8al</i><i>kdf8</i><i>4tn3</i><i>2xja</i><i>h7c0</i><i>29dn7</i><i
-                                                                class="ico copy"></i></b></span></p>
+                                                            title="{{ $data->from->address }}"><i>{{ $data->from->address }}</i>
+                                                            <i class="ico copy"></i></b></span></p>
                                             </div>
-                                            <p class="order-attention">{{(__'The exchange rate will be fixed after receiving
-                                                <b>1</b> network confirmations.')}}</p>
+                                            <p class="order-attention">{{__('The exchange rate will be fixed after receiving')}}
+                                                <b>1</b> {{ __('network confirmations.')}}</p>
                                         </div>
                                         <div class="order-data-destination">
-                                            <p><label>{{(__'Receiving address ETH')}}</label><br><span
-                                                    class="order-address-destination">0xb794f5ea0ba39494ce839613fffba74279579268</span>
+                                            <p><label>{{__('Receiving address ETH')}}</label><br><span
+                                                    class="order-address-destination">{{ $order->receive_address }}</span>
                                             </p>
                                         </div>
                                     </div>
@@ -471,31 +545,31 @@
                                 <div class="timeline-container">
                                     <ol id="timeline_steps" class="clrfix" data-value="eth">
                                         <li id="timeline_new" class="active">
-                                            <div><span class="ico deposit"></span><label>{{(__'Awaiting deposit')}}</label></div>
+                                            <div><span class="ico deposit"></span><label>{{__('Awaiting deposit')}}</label></div>
                                         </li>
                                         <li id="timeline_pending" class="">
-                                            <div><span class="ico pending"></span><label class="foremergency">{{(__'Waiting
-                                                    for user response')}}</label><label>{{(__'Awaiting confirmations')}}</label></div>
+                                            <div><span class="ico pending"></span><label class="foremergency">{{__('Waiting
+                                                    for user response')}}</label><label>{{__('Awaiting confirmations')}}</label></div>
                                         </li>
                                         <li id="timeline_exchange">
-                                            <div><span class="ico exchange"></span><label>{{(__'Perform exchange')}}</label></div>
+                                            <div><span class="ico exchange"></span><label>{{__('Perform exchange')}}</label></div>
                                         </li>
                                         <li id="timeline_done" class="">
                                             <div><span class="ico complete"></span><label
-                                                    class="forrefund">{{(__'Refunded')}}</label><label>{{(__'Done')}}</label></div>
+                                                    class="forrefund">{{__('Refunded')}}</label><label>{{__('Done')}}</label></div>
                                         </li>
                                     </ol>
                                 </div>
                             </section>
                             <section class="order-info">
                                 <section class="order-info-known">
-                                    <h3>{{(__'What do you need to know')}}?</h3>
-                                    <div class="order-note"><em class="ico speed">­</em>{{(__'You only need')}} <strong>1</strong>
-                                        {{(__'confirmation of the Bitcoin blockchain for the exchange')}}</div>
-                                    <div class="order-note"><em class="ico coin btc">­</em>{{(__'Bitcoin transaction
+                                    <h3>{{__('What do you need to know')}}?</h3>
+                                    <div class="order-note"><em class="ico speed">­</em>{{__('You only need')}} <strong>1</strong>
+                                        {{__('confirmation of the Bitcoin blockchain for the exchange')}}</div>
+                                    <div class="order-note"><em class="ico coin btc">­</em>{{__('Bitcoin transaction
                                         confirmation speed depends on the level of blockchain network congestion, more
                                         in our')}} <a
-                                            href="//{{ url('/') }}/blog/guides/why-bitcoin-is-not-confirmed">{{(__'article')}}</a>
+                                            href="{{ url('/') }}/blog/guides/why-bitcoin-is-not-confirmed">{{__('article')}}</a>
                                     </div>
                                     <div class="order-note"><em class="ico coin segwit">­</em>We use segwit Bitcoin
                                         addresses for faster and cheaper transactions, if your wallet does not support
@@ -524,7 +598,7 @@
                                     <div id="notyfy_subscribed" class="active">
                                         <h3>Order status notifications</h3>
                                         <p>You have subscribed to notifications of changes to this order; a notification
-                                            has been sent to your email <b id="notyfy_email">towojuads@gmail.com</b></p>
+                                            has been sent to your email <b id="notyfy_email">{{ auth()->user()->email }}</b></p>
                                         <a href="#" class="order-notyfy-wrong hoverhl" id="notyfy_wrong">I want to
                                             change my email for receiving notifications</a>
                                         <span class="ico notyfy-compl-0"><i class="ico hl notyfy-compl-1"></i></span>
@@ -616,8 +690,8 @@
                 <p>
                     {{__('We use cookies to provide the best experience on our website. By
                     using')}} {{ url('/') }} you agree to
-                    <a href="//{{ url('/') }}/privacy-policy.html">{{__('Privacy Policy')}}</a> {{__('and')}}
-                    <a href="//{{ url('/') }}/terms-of-service.html">{{__('Terms of Service')}}</a>.
+                    <a href="{{ url('/') }}/privacy-policy.html">{{__('Privacy Policy')}}</a> {{__('and')}}
+                    <a href="{{ url('/') }}/terms-of-service.html">{{__('Terms of Service')}}</a>.
                 </p>
             </div>
             <div class="cookie-cell clrfix">

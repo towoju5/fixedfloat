@@ -374,3 +374,17 @@ if (!function_exists('currency_btc')) {
       return Carbon::createFromTimeStamp(strtotime($datetime))->diffForHumans();
    }
 }
+
+if (!function_exists('blog_url')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function blog_url($slug)
+   {
+      $url = session()->get('locale').'/'.config('binshopsblog.blog_prefix', 'blog');
+      $final = "$url/$slug";
+      return url($final);
+   }
+}
