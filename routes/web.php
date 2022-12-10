@@ -33,10 +33,14 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', function () {
         // get tickers
-        $float = app('fixedfloat');
-        $tickers = $float->getCurrencies();
-        $tickers = result($tickers['data']);
-        return view('welcome', compact(['tickers']));
+        $float = app('binance');
+        return $tickers = $float->getConvertorderStatus();
+        return $tickers = $float->getConvertacceptQuote();
+        return $tickers = $float->getConvertgetQuote();
+        return $tickers = $float->getConvertQuery();
+        return $tickers = $float->getConvertRate();
+        // $tickers = result($tickers['data']);
+        // return view('welcome', compact(['tickers']));
     });
 
 
