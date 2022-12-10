@@ -73,29 +73,18 @@ class HomeController extends Controller
             return response()->json($price);
         } elseif(getenv('TRADEMODE') == 'binance') {
             $pro = app('binance');
-            // $data = [
-            //     'quoteId'     => _getTransactionId(),
-            //     'fromAsset'   => $request->fromCurrency,
-            //     'toAsset'     => $request->toCurrency,
-            //     'fromAmount'  => $request->fromQty,
-            //     'validTime'   => '2m'
-            // ];
-
             $data = [
-                'quoteId'       => '12415572564',
-                'ratio'         => '38163.7',
-                'inverseRatio'  => '0.0000262',
-                'validTimestamp'=> 1623319461670,
-                'toAmount'      => '3816.37',
-                'fromAmount'    => '1',
-                'fromAsset'     =>  'BTC',
-                'toAsset'       =>  'ETH',
+                'quoteId'     => _getTransactionId(),
+                'fromAsset'   => $request->fromCurrency,
+                'toAsset'     => $request->toCurrency,
+                'fromAmount'  => $request->fromQty,
+                'validTime'   => '2m'
             ];
 
             $main   = $pro->getConvertRate($data);
             $result = $pro->getConvertgetQuote($data);
             $decode = ajaxEchangePrice($result, $main);
-            return response()->json([$result, $main]);
+            // return response()->json([$result, $main]);
             return response()->json($decode);
         //    return ($decode);
         }
