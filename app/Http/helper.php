@@ -35,7 +35,7 @@ if (!function_exists('currency_format')) {
     */
    function currency_format($amount)
    {
-      return currency().number_format($amount,2);
+      return currency() . number_format($amount, 2);
    }
 }
 
@@ -74,7 +74,7 @@ if (!function_exists('settings')) {
       }
 
       $result = Settings::where('key', $key)->first();
-      if(!empty($result)) :
+      if (!empty($result)) :
          return $result->value;
       endif;
 
@@ -286,7 +286,7 @@ if (!function_exists('get_commission')) {
    /**
     * return uuid()
     */
-   function get_commission($price) : float
+   function get_commission($price): float
    {
       $commission = 0;
       $getCharges = settings('order_charges') ?? 1;
@@ -318,7 +318,7 @@ if (!function_exists('save_order')) {
          'order_token'     => $data['token'],
          'raw_data'        => json_encode($data),
          'order_reg'       => Carbon::parse($data['reg'])->format('Y-m-d H:i'),
-         'order_expiration'=> Carbon::parse($data['expiration'])->format('Y-m-d H:i'), // time stamp,
+         'order_expiration' => Carbon::parse($data['expiration'])->format('Y-m-d H:i'), // time stamp,
       ]);
       return $save;
    }
@@ -328,7 +328,7 @@ if (!function_exists('status_code')) {
    /**
     * return meaning of code
     */
-   function status_code($code) : string
+   function status_code($code): string
    {
       switch ($code) {
          case '0':
@@ -383,8 +383,80 @@ if (!function_exists('blog_url')) {
     */
    function blog_url($slug)
    {
-      $url = session()->get('locale').'/'.config('binshopsblog.blog_prefix', 'blog');
+      $url = session()->get('locale') . '/' . config('binshopsblog.blog_prefix', 'blog');
       $final = "$url/$slug";
       return url($final);
+   }
+}
+
+if (!function_exists('process_binance_withdrawal')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function process_binance_withdrawal($order)
+   {
+      $getTransaction = Order::where('order_id', $order)->first();
+      $data = [
+         'coin'      => $getTransaction->to_currency,
+         'address'   => $getTransaction->receive_address,
+         'amount'    => $getTransaction->receive_amount,
+         'withdrawOrderId' => _getTransactionId()
+      ];
+      $pro = app('binance');
+      return $pro->processWithdrawal($data);
+   }
+}
+
+if (!function_exists('ajaxEchangePrice')) {
+   function ajaxEchangePrice($data, $main)
+   {
+      // var_dump([$data, $main]);
+      $req = request(); 
+      $main = $main[0];
+      // get the USD rate via API
+      $rate = cache()->remember('users', 120, function () use (&$req) {
+         $endCoin = $req->fromCurrency;
+         $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=$endCoin&tsyms=USD"), true);
+         if(!empty($rates)) return ($rates['USD'] * $req->fromQty);
+      });
+      
+      // cache(['quoteId_' => 'value'], now()->addMinutes(1));
+      if(in_array('quoteId', $data)){
+         session()->put('quoteId', $data['quoteId'] ?? '12415572564');
+      }
+
+      return [
+         'code' => 0,
+         'msg' => 'OK',
+         'data' => [
+            'from' => [
+               'currency' => $req->fromCurrency,
+               'network' => $req->fromCurrency,
+               'coin' => $req->fromCurrency,
+               'amount' => $req->fromQty,
+               'rate' => $data['ratio'],
+               'precision' => 8,
+               'min' => $main['fromAssetMinAmount'], //0.00040829,
+               'max' => $main['fromAssetMaxAmount'],
+               'usd' => $rate,
+               'btc' => ($req->fromQty * $data['inverseRatio']),
+            ],
+            'to' => [
+               'currency' => $req->toCurrency,
+               'network' => $req->toCurrency,
+               'coin' => $req->toCurrency,
+               'amount' => $data['toAmount'],
+               'rate' => $data['inverseRatio'], //0.07335538,
+               'precision' => 8,
+               'min' => $main['toAssetMinAmount'],
+               'max' => $main['toAssetMaxAmount'],
+               'usd' => $data['toAmount'],
+            ],
+            'error' => 0,
+            'status' => [],
+         ],
+      ];
    }
 }

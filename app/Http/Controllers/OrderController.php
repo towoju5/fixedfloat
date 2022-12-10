@@ -134,33 +134,74 @@ class OrderController extends Controller
             "fromQty"       =>  "required",
         ]);
 
-        $pro = $this->float;
-        $data = [
-            "fromCurrency"  =>  $request->fromCurrency,
-            "toCurrency"    =>  $request->toCurrency,
-            "toAddress"     =>  $request->toAddress,
-            "fromQty"       =>  $request->fromQty,
-            "toQty"         =>  $this->charges($request->fromQty),
-            "type"          =>  $request->type,
-        ];
-        $response = $pro->createOrder($data);
-        // \Log::info($response);
-        if ($response['code'] != 0 OR strtolower($response['msg']) != 'ok') {
-            return get_error_response($response);
+        // if(!null == (session()->get('quoteId')) OR empty(session()->get('quoteId'))) return get_error_response(['msg' => 'No quote Id'], 500);
+        if(getenv('TRADEMODE') == 'fixedfloat'){    
+            $pro = $this->float;
+            $data = [
+                "fromCurrency"  =>  $request->fromCurrency,
+                "toCurrency"    =>  $request->toCurrency,
+                "toAddress"     =>  $request->toAddress,
+                "fromQty"       =>  $request->fromQty,
+                "toQty"         =>  $this->charges($request->fromQty),
+                "type"          =>  $request->type,
+            ];
+            $response = $pro->createOrder($data);
+            // \Log::info($response);
+            if ($response['code'] != 0 OR strtolower($response['msg']) != 'ok') {
+                return get_error_response($response);
+            }
+            $data = $response['data'];
+            $saveOrder = save_order($data);
+            return $response;
+            echo json_encode([
+                $saveOrder->order_id
+            ]); exit;
+            $result = response()->json([
+                'code' => 0,
+                'msg' => 'OK',
+                'data' => [
+                  'id' => $saveOrder->order_id
+                ]
+            ], 200);
+        } elseif(getenv('TRADEMODE') == 'binance') {
+            $pro = app('binance');
+            // $create quote
+            $data = [
+                "fromAsset"     =>  $request->fromCurrency,
+                "toAsset"       =>  $request->toCurrency,
+                "toAddress"     =>  $request->toAddress,
+                "fromAmount"    =>  $request->fromQty,
+                "toQty"         =>  $this->charges($request->fromQty),
+                "type"          =>  $request->type,
+            ];
+            
+            $qouteId = session()->get('quoteId');
+            $acceptQoute = [
+                'quoteId'   =>  '12415572564'
+            ];
+            
+            $response = $pro->getConvertacceptQuote($acceptQoute);
+            // \Log::info($response);
+            
+            if ($response['code'] != 0 OR strtolower($response['msg']) != 'ok') {
+                return get_error_response($response);
+            }
+            
+            $data = $response['data'];
+            $saveOrder = save_order($data);
+            return $response;
+            echo json_encode([
+                $saveOrder->order_id
+            ]); exit;
+            $result = response()->json([
+                'code' => 0,
+                'msg' => 'OK',
+                'data' => [
+                  'id' => $saveOrder->order_id
+                ]
+            ], 200);
         }
-        $data = $response['data'];
-        $saveOrder = save_order($data);
-        return $response;
-        echo json_encode([
-            $saveOrder->order_id
-        ]); exit;
-        return response()->json([
-            'code' => 0,
-            'msg' => 'OK',
-            'data' => [
-              'id' => $saveOrder->order_id
-            ]
-        ], 200);
+        return $result;
     }
 
     public function getOrder(Request $request, $id)
