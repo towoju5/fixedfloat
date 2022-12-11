@@ -207,7 +207,7 @@ class OrderController extends Controller
     public function getOrder(Request $request, $id)
     {
         $pro = $this->float;
-        $order= Order::where('order_id', $id)->first();
+        $order= Order::where('order_id', $id)->with('user')->first();
         // $data = [
         //     'id'    => $order->order_id,
         //     'token' => $order->order_token

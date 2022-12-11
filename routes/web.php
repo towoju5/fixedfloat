@@ -11,6 +11,7 @@ use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\BinanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\KucoinController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\TransactionController;
@@ -48,6 +49,7 @@ Route::group(['middleware' => 'web'], function () {
     // Binance Routes
 
     Route::get('b', [BinanceController::class, 'balance']);
+    // Route::get('a', [KucoinController::class, 'index']);
 
 
     Route::any('ajax/exchangePrice',        [HomeController::class, 'exchangePrice']);

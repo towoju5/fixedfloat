@@ -598,7 +598,7 @@
                                     <div id="notyfy_subscribed" class="active">
                                         <h3>Order status notifications</h3>
                                         <p>You have subscribed to notifications of changes to this order; a notification
-                                            has been sent to your email <b id="notyfy_email">{{ auth()->user()->email }}</b></p>
+                                            has been sent to your email <b id="notyfy_email">{{ $order->user->email }}</b></p>
                                         <a href="#" class="order-notyfy-wrong hoverhl" id="notyfy_wrong">I want to
                                             change my email for receiving notifications</a>
                                         <span class="ico notyfy-compl-0"><i class="ico hl notyfy-compl-1"></i></span>
