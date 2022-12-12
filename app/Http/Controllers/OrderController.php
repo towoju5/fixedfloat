@@ -103,7 +103,13 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $order = Order::findorFail($id);
+        $order->payment_hash = $request->payment_hash;
+        if($order->save()):
+            return redirect()->back()->with('success', 'Payment hash updated successfully');
+        else : 
+            return redirect()->back()->with('error', 'Payment hash update failed');
+        endif;
     }
 
     /**
@@ -166,14 +172,14 @@ class OrderController extends Controller
         } elseif(getenv('TRADEMODE') == 'binance') {
             $pro = app('binance');
             // $create quote
-            $data = [
-                "fromAsset"     =>  $request->fromCurrency,
-                "toAsset"       =>  $request->toCurrency,
-                "toAddress"     =>  $request->toAddress,
-                "fromAmount"    =>  $request->fromQty,
-                "toQty"         =>  $this->charges($request->fromQty),
-                "type"          =>  $request->type,
-            ];
+            // $data = [
+            //     "fromAsset"     =>  $request->fromCurrency,
+            //     "toAsset"       =>  $request->toCurrency,
+            //     "toAddress"     =>  $request->toAddress,
+            //     "fromAmount"    =>  $request->fromQty,
+            //     "toQty"         =>  $this->charges($request->fromQty),
+            //     "type"          =>  $request->type,
+            // ];
             
             $qouteId = session()->get('quoteId');
             $acceptQoute = [
@@ -201,19 +207,13 @@ class OrderController extends Controller
                 ]
             ], 200);
         }
-        return $result;
+        // return $result;
     }
 
     public function getOrder(Request $request, $id)
     {
         $pro = $this->float;
         $order= Order::where('order_id', $id)->with('user')->first();
-        // $data = [
-        //     'id'    => $order->order_id,
-        //     'token' => $order->order_token
-        // ];
-        // $response = $pro->getOrder($data);
-        // return $response;
         return view('order', compact('order'));
     }
 

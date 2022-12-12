@@ -371,7 +371,7 @@ if (!function_exists('currency_btc')) {
     */
    function currency_btc($currency, $amount)
    {
-      return Carbon::createFromTimeStamp(strtotime($datetime))->diffForHumans();
+      // return Carbon::createFromTimeStamp(strtotime($datetime))->diffForHumans();
    }
 }
 

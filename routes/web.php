@@ -33,16 +33,8 @@ use Illuminate\Support\Facades\App;
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', function () {
-        // get tickers
-        // $float = app('binance');
-        // return $tickers = $float->getConvertorderStatus();
-        // return $tickers = $float->getConvertacceptQuote();
-        // return $tickers = $float->getConvertgetQuote();
-        // return $tickers = $float->getConvertQuery();
-        // return $tickers = $float->getConvertRate();
-        // $tickers = result($tickers['data']);
         return view('welcome');
-    });
+    })->name('home');
 
 
 
@@ -56,6 +48,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::any('ajax/exchangeAddressInfo',  [HomeController::class, 'exchangeAddressInfo']);
     Route::any('ajax/exchangeMake',         [OrderController::class, 'createOrder'])->name('create'); //->middleware('auth');
     Route::any('order/{order_id}',          [OrderController::class, 'getOrder'])->name('order'); //->middleware('auth');
+    Route::any('update/{order_id}/order',   [OrderController::class, 'update'])->name('payment.hash.update');
     // Switch language
     // Route::any('lang/{lang}', [HomeController::class, 'language']);
     Route::get('lang/{lang}', [LanguageController::class, 'switchLang'])->name('lang.switch');

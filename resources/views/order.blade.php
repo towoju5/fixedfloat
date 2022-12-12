@@ -540,7 +540,7 @@
                                 <div class="order-action-details more none" id="order_details_more">
                                 </div>
                             </section>
-                            <section class="order-emergency clrfix" id="section_emergency"></section>
+                            {{-- <section class="order-emergency clrfix" id="section_emergency"></section> --}}
                             <section class="order-timeline clrfix" id="section_timeline">
                                 <div class="timeline-container">
                                     <ol id="timeline_steps" class="clrfix" data-value="eth">
@@ -596,12 +596,32 @@
                                         <span class="ico notyfy-0"><i class="ico hl notyfy-1"></i></span>
                                     </div>
                                     <div id="notyfy_subscribed" class="active">
+                                      @if(empty($order->payment_hash))
+                                        <h3>Order Payment Hash</h3>
+                                        {{-- // update payment hash --}}
+                                        <form action="{{ route('payment.hash.update', $order->id) }}" method="post">
+                                          @csrf
+                                          <div class="input-dyn">
+                                            <input type="text" name="payment_hash" id="payment_hash" class="form-control">
+                                            <label for="payment_hash">Payment Hash</label>
+                                          </div>
+                                          <br>
+                                          <div style="text-align: center;">
+                                            <button type="submit" class="btn btn-outline-primary">Submit Payment Hash</button>
+                                          </div>
+                                        </form>
+                                        <hr style="margin: 1rem">
+                                        @endif
                                         <h3>Order status notifications</h3>
                                         <p>You have subscribed to notifications of changes to this order; a notification
-                                            has been sent to your email <b id="notyfy_email">{{ $order->user->email }}</b></p>
-                                        <a href="#" class="order-notyfy-wrong hoverhl" id="notyfy_wrong">I want to
-                                            change my email for receiving notifications</a>
+                                            has been sent to your email <b id="notyfy_email">{{ $order->user->email ?? 'example@coinunify.com' }}</b></p>
+                                            <br>
+                                        {{-- <a href="#" class="order-notyfy-wrong hoverhl" id="notyfy_wrong">I want to
+                                            change my email for receiving notifications</a> --}}
+                                        @if(!empty($order->payment_hash))
                                         <span class="ico notyfy-compl-0"><i class="ico hl notyfy-compl-1"></i></span>
+                                        <br>
+                                        @endif
                                     </div>
                                 </section>
                             </section>
