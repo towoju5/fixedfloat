@@ -41,7 +41,7 @@ Route::group(['middleware' => 'web'], function () {
     // Binance Routes
 
     Route::get('b', [BinanceController::class, 'balance']);
-    // Route::get('a', [KucoinController::class, 'index']);
+    Route::get('a', [KucoinController::class, 'index']);
 
 
     Route::any('ajax/exchangePrice',        [HomeController::class, 'exchangePrice']);

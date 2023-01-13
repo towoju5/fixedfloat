@@ -32,32 +32,18 @@ class HomeController extends Controller
     }
 
 
-    // public function exchangePrice(Request $request)
-    // {
-    //     if(getenv('TRADEMODE') == 'fixedfloat'){            
-    //         $pro = new Fixedfloat();
-    //         $data = [
-    //             'fromCurrency' => $request->fromCurrency,
-    //             'toCurrency' => $request->toCurrency,
-    //             'fromQty' => $request->fromQty,
-    //             'type' => $request->type
-    //         ];
-    //         $price = $pro->getPrice($data);
-    //         return response()->json($price);
-    //     } elseif(getenv('TRADEMODE') == 'binance') {
-    //         $pro = app('binance');
-    //         $data = [
-    //             'fromAsset'         => 'BTC',          //$request->fromCurrency,
-    //             'toAsset'           => 'ETH',          //$request->toCurrency,
-    //             'fromAmount'        => '5',          //$request->fromQty,
-    //             // 'type' => $request->type
-    //         ];
-    //         // $decode = ajaxEchangePrice($data);
-
-    //         $result = $pro->getConvertRate($data);
-    //        return ($result);
-    //     }
-    // }
+    public function exchangePriceKucoin(Request $request)
+    {
+        $pro = new Kucoin();
+        $data = [
+            'fromCurrency' => $request->fromCurrency,
+            'toCurrency' => $request->toCurrency,
+            'fromQty' => $request->fromQty,
+            'type' => $request->type
+        ];
+        $price = $pro->getPrice($data);
+        return response()->json($price);
+    }
     
     public function exchangePrice(Request $request)
     {
