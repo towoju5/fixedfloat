@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use neto737\BitGoSDK\BitGoSDK;
+use neto737\BitGoSDK\Enum\CurrencyCode;
 
 class OrderController extends Controller
 {
@@ -14,9 +16,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Admin Controllers methods
-     */
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -25,8 +24,7 @@ class OrderController extends Controller
     {
         $getOrders = Order::with(['user'])->orderBy('created_at', 'DESC');
         // Datatables::eloquent($getOrders)->make(true);
-        if($request->ajax())
-        {
+        if ($request->ajax()) {
             return DataTables::eloquent($getOrders)
                 ->addColumn('paid_status', function ($data) {
                     return status_code($data->paid_status);
@@ -105,9 +103,9 @@ class OrderController extends Controller
     {
         $order = Order::findorFail($id);
         $order->payment_hash = $request->payment_hash;
-        if($order->save()):
+        if ($order->save()) :
             return redirect()->back()->with('success', 'Payment hash updated successfully');
-        else : 
+        else :
             return redirect()->back()->with('error', 'Payment hash update failed');
         endif;
     }
@@ -140,80 +138,50 @@ class OrderController extends Controller
             "fromQty"       =>  "required",
         ]);
 
-        // if(!null == (session()->get('quoteId')) OR empty(session()->get('quoteId'))) return get_error_response(['msg' => 'No quote Id'], 500);
-        if(getenv('TRADEMODE') == 'fixedfloat'){    
-            $pro = $this->float;
-            $data = [
-                "fromCurrency"  =>  $request->fromCurrency,
-                "toCurrency"    =>  $request->toCurrency,
-                "toAddress"     =>  $request->toAddress,
-                "fromQty"       =>  $request->fromQty,
-                "toQty"         =>  $this->charges($request->fromQty),
-                "type"          =>  $request->type,
-            ];
-            $response = $pro->createOrder($data);
-            // \Log::info($response);
-            if ($response['code'] != 0 OR strtolower($response['msg']) != 'ok') {
-                return get_error_response($response);
-            }
-            $data = $response['data'];
-            $saveOrder = save_order($data);
-            return $response;
-            echo json_encode([
-                $saveOrder->order_id
-            ]); exit;
-            $result = response()->json([
-                'code' => 0,
-                'msg' => 'OK',
-                'data' => [
-                  'id' => $saveOrder->order_id
-                ]
-            ], 200);
-        } elseif(getenv('TRADEMODE') == 'binance') {
-            $pro = app('binance');
-            // $create quote
-            // $data = [
-            //     "fromAsset"     =>  $request->fromCurrency,
-            //     "toAsset"       =>  $request->toCurrency,
-            //     "toAddress"     =>  $request->toAddress,
-            //     "fromAmount"    =>  $request->fromQty,
-            //     "toQty"         =>  $this->charges($request->fromQty),
-            //     "type"          =>  $request->type,
-            // ];
-            
-            $qouteId = session()->get('quoteId');
-            $acceptQoute = [
-                'quoteId'   =>  '12415572564'
-            ];
-            
-            $response = $pro->getConvertacceptQuote($acceptQoute);
-            // \Log::info($response);
-            
-            if ($response['code'] != 0 OR strtolower($response['msg']) != 'ok') {
-                return get_error_response($response);
-            }
-            
-            $data = $response['data'];
-            $saveOrder = save_order($data);
-            return $response;
-            echo json_encode([
-                $saveOrder->order_id
-            ]); exit;
-            $result = response()->json([
-                'code' => 0,
-                'msg' => 'OK',
-                'data' => [
-                  'id' => $saveOrder->order_id
-                ]
-            ], 200);
+        // $create quote
+        // $data = [
+        //     "fromAsset"     =>  $request->fromCurrency,
+        //     "toAsset"       =>  $request->toCurrency,
+        //     "toAddress"     =>  $request->toAddress,
+        //     "fromAmount"    =>  $request->fromQty,
+        //     "toQty"         =>  $this->charges($request->fromQty),
+        //     "type"          =>  $request->type,
+        // ];
+
+        
+        $response = $pro->getConvertacceptQuote($acceptQoute);
+        // \Log::info($response);
+
+        if ($response['code'] != 0 or strtolower($response['msg']) != 'ok') {
+            return get_error_response($response);
         }
-        // return $result;
+        
+        $bitgo = new BitGoSDK('YOUR_API_KEY_HERE', CurrencyCode::BITCOIN, false);
+        $bitgo->walletId = 'YOUR_WALLET_ID_HERE';
+
+
+        $data = $response['data'];
+        $saveOrder = save_order($data);
+        return $response;
+        echo json_encode([
+            $saveOrder->order_id
+        ]);
+        exit;
+
+        $result = response()->json([
+            'code' => 0,
+            'msg' => 'OK',
+            'data' => [
+                'id' => $saveOrder->order_id
+            ]
+        ], 200);
+
     }
 
     public function getOrder(Request $request, $id)
     {
         $pro = $this->float;
-        $order= Order::where('order_id', $id)->with('user')->first();
+        $order = Order::where('order_id', $id)->with('user')->first();
         return view('order', compact('order'));
     }
 
@@ -234,7 +202,7 @@ class OrderController extends Controller
      * Calculate the attractable charges for this transaction.
      * @return toQty as float
      */
-    public function charges($fromQty) : float
+    public function charges($fromQty): float
     {
         $getCharges = get_commission($fromQty);
         $toQty = $fromQty - $getCharges;

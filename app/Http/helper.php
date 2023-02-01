@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use KuCoin\SDK\KuCoinApi;
 use App\Models\Order;
+use Illuminate\Support\Facades\Http;
 
 if (!function_exists('kucoin')) {
    /**
@@ -389,6 +390,19 @@ if (!function_exists('blog_url')) {
    }
 }
 
+if (!function_exists('getExchangeVal')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function getExchangeVal($fromCurrency, $toCurrency)
+   {
+      $url = Http::get("https://min-api.cryptocompare.com/data/price?fsym=$fromCurrency&tsyms=$toCurrency");
+      return $url[$toCurrency];
+   }
+}
+
 if (!function_exists('process_binance_withdrawal')) {
    /*
     * Convert fee to BTC
@@ -410,23 +424,9 @@ if (!function_exists('process_binance_withdrawal')) {
 }
 
 if (!function_exists('ajaxEchangePrice')) {
-   function ajaxEchangePrice($data, $main)
+   function ajaxEchangePrice($data, $main, $amount)
    {
-      // var_dump([$data, $main]);
       $req = request(); 
-      $main = $main[0];
-      // get the USD rate via API
-      $rate = cache()->remember('users', 120, function () use (&$req) {
-         $endCoin = $req->fromCurrency;
-         $rates = json_decode(file_get_contents("https://min-api.cryptocompare.com/data/price?fsym=$endCoin&tsyms=USD"), true);
-         if(!empty($rates)) return ($rates['USD'] * $req->fromQty);
-      });
-      
-      // cache(['quoteId_' => 'value'], now()->addMinutes(1));
-      if(in_array('quoteId', $data)){
-         session()->put('quoteId', $data['quoteId'] ?? '12415572564');
-      }
-
       return [
          'code' => 0,
          'msg' => 'OK',
@@ -436,23 +436,23 @@ if (!function_exists('ajaxEchangePrice')) {
                'network' => $req->fromCurrency,
                'coin' => $req->fromCurrency,
                'amount' => $req->fromQty,
-               'rate' => $data['ratio'],
+               'rate' => 0,
                'precision' => 8,
-               'min' => $main['fromAssetMinAmount'], //0.00040829,
-               'max' => $main['fromAssetMaxAmount'],
-               'usd' => $rate,
-               'btc' => ($req->fromQty * $data['inverseRatio']),
+               'min' => 0.00040829,
+               'max' => 10,
+               'usd' => getExchangeVal($req->fromCurrency, "USD"),
+               'btc' => ($req->fromQty),
             ],
             'to' => [
                'currency' => $req->toCurrency,
                'network' => $req->toCurrency,
                'coin' => $req->toCurrency,
-               'amount' => $data['toAmount'],
-               'rate' => $data['inverseRatio'], //0.07335538,
+               'amount' => $amount,
+               'rate' => 0,
                'precision' => 8,
-               'min' => $main['toAssetMinAmount'],
-               'max' => $main['toAssetMaxAmount'],
-               'usd' => $data['toAmount'],
+               'min' => 0, //$main['toAssetMinAmount'],
+               'max' => 0, //$main['toAssetMaxAmount'],
+               'usd' => getExchangeVal($req->toCurrency, "USD") * $amount,
             ],
             'error' => 0,
             'status' => [],

@@ -6,6 +6,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Towoju5\Fixedfloat\Fixedfloat;
 
@@ -18,7 +19,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->float = app('fixedfloat');
+        // $this->float = app('fixedfloat');
     }
 
     /**
@@ -30,53 +31,28 @@ class HomeController extends Controller
     {
         return redirect(route('users.dashboard'));
     }
-
-
-    public function exchangePriceKucoin(Request $request)
-    {
-        $pro = new Kucoin();
-        $data = [
-            'fromCurrency' => $request->fromCurrency,
-            'toCurrency' => $request->toCurrency,
-            'fromQty' => $request->fromQty,
-            'type' => $request->type
-        ];
-        $price = $pro->getPrice($data);
-        return response()->json($price);
-    }
     
     public function exchangePrice(Request $request)
     {
-        if(getenv('TRADEMODE') == 'fixedfloat'){            
-            $pro = new Fixedfloat();
-            $data = [
-                'fromCurrency' => $request->fromCurrency,
-                'toCurrency' => $request->toCurrency,
-                'fromQty' => $request->fromQty,
-                'type' => $request->type
-            ];
-            $price = $pro->getPrice($data);
-            return response()->json($price);
-        } elseif(getenv('TRADEMODE') == 'binance') {
-            $pro = app('binance');
-            $data = [
-                'quoteId'     => _getTransactionId(),
-                'fromAsset'   => $request->fromCurrency,
-                'toAsset'     => $request->toCurrency,
-                'fromAmount'  => $request->fromQty,
-                'validTime'   => '2m'
-            ];
+        $toCurrency = $request->toCurrency;
+        $fromCurrency = $request->fromCurrency;
+        $data = [
+            'quoteId'     => _getTransactionId(),
+            'fromAsset'   => $request->fromCurrency,
+            'toAsset'     => $request->toCurrency,
+            'fromAmount'  => $request->fromQty,
+        ];
 
-            $main   = $pro->getConvertRate($data);
-            $result = $pro->getConvertgetQuote($data);
-            $decode = ajaxEchangePrice($result, $main);
-            // return response()->json([$result, $main]);
-            return response()->json($decode);
-        //    return ($decode);
-        }
+        $test = getExchangeVal($fromCurrency, $toCurrency);
+        $cal = $test * $request->fromQty;
+        // return $cal;
+
+        // $main   = $pro->getConvertRate($data);
+        // $result = $pro->getConvertgetQuote($data);
+        $decode = ajaxEchangePrice([], [], $cal);
+        // // return response()->json([$result, $main]);
+        return response()->json($decode);
     }
-
-
 
     public function exchangeAddressInfo(Request $request)
     {
@@ -87,9 +63,15 @@ class HomeController extends Controller
         ];
         $result = $pro->exchangeAddressInfo($data);
         return response()->json($result);
+
+        // sample response is as below
+        // [
+        //     'valid' => true,
+        //     'amount' => NULL,
+        //     'result_address' => '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+        //     'valid_address' => true,
+        // ]
     }
-
-
 
     public function language($lang)
     {
