@@ -12,7 +12,7 @@ class OrderController extends Controller
 {
     public function __construct()
     {
-        $this->float = app('fixedfloat');
+        // $this->float = app('fixedfloat');
     }
 
     /**
@@ -139,36 +139,29 @@ class OrderController extends Controller
         ]);
 
         // $create quote
-        // $data = [
-        //     "fromAsset"     =>  $request->fromCurrency,
-        //     "toAsset"       =>  $request->toCurrency,
-        //     "toAddress"     =>  $request->toAddress,
-        //     "fromAmount"    =>  $request->fromQty,
-        //     "toQty"         =>  $this->charges($request->fromQty),
-        //     "type"          =>  $request->type,
-        // ];
+        $amount = getExchangeVal($request->fromCurrency, $request->toCurrency);
+        $fee = $this->charges($amount * $request->fromQty);
+        $receive_amount = $fee;
 
+        $data = [
+            "fromAsset"     =>  $request->fromCurrency,
+            "toAsset"       =>  $request->toCurrency,
+            "toAddress"     =>  $request->toAddress,
+            "fromAmount"    =>  $request->fromQty,
+            "toQty"         =>  $receive_amount,
+            "type"          =>  $request->type,
+        ];
+        $data['receive_amount'] = $receive_amount;
+        $data['receive_address'] = get_wallet_address($request->fromCurrency);
         
-        $response = $pro->getConvertacceptQuote($acceptQoute);
-        // \Log::info($response);
-
-        if ($response['code'] != 0 or strtolower($response['msg']) != 'ok') {
-            return get_error_response($response);
-        }
-        
-        $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN, false);
-        $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
-        return $createAddress = $bitgo->createWalletAddress();
-
-        $data = $response['data'];
         $saveOrder = save_order($data);
-        return $response;
+        
         echo json_encode([
             $saveOrder->order_id
         ]);
         exit;
 
-        $result = response()->json([
+        return response()->json([
             'code' => 0,
             'msg' => 'OK',
             'data' => [
@@ -180,47 +173,45 @@ class OrderController extends Controller
 
     public function getOrder(Request $request, $id)
     {
-        $pro = $this->float;
         $order = Order::where('order_id', $id)->with('user')->first();
         return view('order', compact('order'));
     }
 
     public function getPrice(Request $request)
     {
-        $pro = $this->float;
-        $data = [
-            "fromCurrency"  =>  "BTC",
-            "toCurrency"    =>  "ETH",
-            "fromQty"   =>  "1",
-            // "type"  =>  "xoxo",
-        ];
-        $response = $pro->getPrice($data);
-        return $response;
+        // $data = [
+        //     "fromCurrency"  =>  "BTC",
+        //     "toCurrency"    =>  "ETH",
+        //     "fromQty"   =>  "1",
+        //     // "type"  =>  "xoxo",
+        // ];
+        // $response = $pro->getPrice($data);
+        // return $response;
     }
 
     /**
      * Calculate the attractable charges for this transaction.
      * @return toQty as float
      */
-    public function charges($fromQty): float
+    public function charges($receive_amount): float
     {
-        $getCharges = get_commission($fromQty);
-        $toQty = $fromQty - $getCharges;
+        $getCharges = get_commission($receive_amount);
+        $toQty = $receive_amount - $getCharges;
         return floatval($toQty);
     }
 
     public function cron()
     {
-        $pro = $this->float;
-        $orders = Order::where('status', 0)->get();
-        foreach ($orders as $key => $order) {
-            $data = [
-                'id'    => $order->order_id,
-                'token' => $order->order_token
-            ];
-            $response = $pro->getOrder($data);
-            $this->process_status($response, $order->id);
-        }
+        // $pro = $this->float;
+        // $orders = Order::where('status', 0)->get();
+        // foreach ($orders as $key => $order) {
+        //     $data = [
+        //         'id'    => $order->order_id,
+        //         'token' => $order->order_token
+        //     ];
+        //     $response = $pro->getOrder($data);
+        //     $this->process_status($response, $order->id);
+        // }
     }
 
     private function process_status($data, $id)
