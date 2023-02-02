@@ -17,6 +17,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\TransactionController;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\App;
+use neto737\BitGoSDK\BitGoSDK;
+use neto737\BitGoSDK\Enum\CurrencyCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,8 +42,12 @@ Route::group(['middleware' => 'web'], function () {
 
     // Binance Routes
 
-    Route::get('b', [BinanceController::class, 'balance']);
-    Route::get('a', [KucoinController::class, 'index']);
+    // Route::get('b', [BinanceController::class, 'balance']);
+    Route::get('a', function(){
+        $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN_TESTNET, true);
+        $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
+        return $createAddress = $bitgo->createWalletAddress();
+    });
 
 
     Route::any('ajax/exchangePrice',        [HomeController::class, 'exchangePrice']);

@@ -155,10 +155,6 @@ class OrderController extends Controller
         if ($response['code'] != 0 or strtolower($response['msg']) != 'ok') {
             return get_error_response($response);
         }
-        
-        $bitgo = new BitGoSDK('YOUR_API_KEY_HERE', CurrencyCode::BITCOIN, false);
-        $bitgo->walletId = 'YOUR_WALLET_ID_HERE';
-
 
         $data = $response['data'];
         $saveOrder = save_order($data);
