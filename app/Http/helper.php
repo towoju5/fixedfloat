@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Storage;
 use KuCoin\SDK\KuCoinApi;
 use App\Models\Order;
 use Illuminate\Support\Facades\Http;
+use neto737\BitGoSDK\BitGoExpress;
+use neto737\BitGoSDK\BitGoSDK;
+use neto737\BitGoSDK\Enum\CurrencyCode;
 
 if (!function_exists('kucoin')) {
    /**
@@ -387,6 +390,49 @@ if (!function_exists('blog_url')) {
       $url = session()->get('locale') . '/' . config('binshopsblog.blog_prefix', 'blog');
       $final = "$url/$slug";
       return url($final);
+   }
+}
+
+if (!function_exists('transfer_crypto')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function transfer_crypto($data)
+   {
+      //for test only
+      $hostname = 'localhost';
+      $port = 3080;
+      $coin = CurrencyCode::BITCOIN_TESTNET;
+      // Initiate transfer process.
+      $password = 'YLSAcPpFVG6@vE4' ?? '0000000';
+        
+      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN, false);
+      
+      // $bitgo = new BitGoExpress($hostname, $port, $coin);
+      $bitgo->unlockSession($password);
+
+      $bitgoExpress = new BitGoExpress($hostname, $port, $coin);
+      $bitgoExpress->accessToken = 'YOUR_API_KEY_HERE';
+      $bitgoExpress->walletId = 'YOUR_WALLET_ID_HERE';
+
+      /**
+       * Send the amount in satoshi
+      */
+      $value_in_btc = 0.25;
+      $amount = BitGoSDK::toSatoshi($value_in_btc);
+
+      $sendTransaction = $bitgoExpress->sendTransaction('DESTINATION_ADDRESS', $amount, 'YOUR_WALLET_PASSPHRASE');
+      var_dump($sendTransaction);
+
+      // my own code
+      $bearerToken = "";
+      $init = Http::post(
+         "/api/v2/{coin}/wallet/{walletId}/sendcoins",
+         $data
+      )->withToken($bearerToken);
+      return $init;
    }
 }
 
