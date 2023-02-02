@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use KuCoin\SDK\KuCoinApi;
 use App\Models\Order;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use neto737\BitGoSDK\BitGoExpress;
 use neto737\BitGoSDK\BitGoSDK;
@@ -305,24 +306,26 @@ if (!function_exists('save_order')) {
     */
    function save_order($data)
    {
+      $r = request();
+      $orderId = uniqid("ORD-", true);
+      $rate = getExchangeVal($r->fromCurrency, $r->toCurrency);
       $save = Order::create([
          'user_id'         => auth()->id(),
-         'order_id'        => $data['id'],
-         'from_currency'   => $data['from']['currency'],
-         'to_currency'     => $data['to']['currency'],
-         'send_amount'     => $data['from']['amount'],
-         'receive_amount'  => $data['to']['amount'],
-         'receive_address' => $data['to']['address'],
-         'order_type'      => $data['type'],
-         'order_rate'      => $data['rate'],
-         'order_rateRev'   => $data['rateRev'],
-         'order_status'    => $data['status'],
-         'order_left'      => $data['left'],
-         'order_left'      => $data['left'],
-         'order_token'     => $data['token'],
+         'order_id'        => $orderId,
+         'from_currency'   => $r->fromCurrency,
+         'to_currency'     => $r->toCurrency,
+         'send_amount'     => $r->fromQty,
+         'receive_amount'  => $data['receive_amount'],
+         'receive_address' => $data['receive_address'],
+         'order_type'      => $r->type,
+         'order_rate'      => $rate,
+         'order_rateRev'   => getExchangeVal($r->toCurrency, $r->fromCurrency), // (1 / $rate),
+         'order_status'    => "pending",
+         'order_left'      => $r->fromQty,
+         'order_token'     => sha1($orderId),
          'raw_data'        => json_encode($data),
-         'order_reg'       => Carbon::parse($data['reg'])->format('Y-m-d H:i'),
-         'order_expiration' => Carbon::parse($data['expiration'])->format('Y-m-d H:i'), // time stamp,
+         'order_reg'       => Carbon::now(),
+         'order_expiration' => Carbon::now()->addMinute(30), // time stamp,
       ]);
       return $save;
    }
@@ -407,15 +410,10 @@ if (!function_exists('transfer_crypto')) {
       $coin = CurrencyCode::BITCOIN_TESTNET;
       // Initiate transfer process.
       $password = 'YLSAcPpFVG6@vE4' ?? '0000000';
-        
-      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN, false);
-      
-      // $bitgo = new BitGoExpress($hostname, $port, $coin);
-      $bitgo->unlockSession($password);
 
       $bitgoExpress = new BitGoExpress($hostname, $port, $coin);
-      $bitgoExpress->accessToken = 'YOUR_API_KEY_HERE';
-      $bitgoExpress->walletId = 'YOUR_WALLET_ID_HERE';
+      $bitgoExpress->accessToken = getenv('BITGO_API_KEY_HERE');
+      $bitgoExpress->walletId = getenv("BITGO_WALLET_ID_HERE");
 
       /**
        * Send the amount in satoshi
@@ -423,16 +421,8 @@ if (!function_exists('transfer_crypto')) {
       $value_in_btc = 0.25;
       $amount = BitGoSDK::toSatoshi($value_in_btc);
 
-      $sendTransaction = $bitgoExpress->sendTransaction('DESTINATION_ADDRESS', $amount, 'YOUR_WALLET_PASSPHRASE');
-      var_dump($sendTransaction);
-
-      // my own code
-      $bearerToken = "";
-      $init = Http::post(
-         "/api/v2/{coin}/wallet/{walletId}/sendcoins",
-         $data
-      )->withToken($bearerToken);
-      return $init;
+      $sendTransaction = $bitgoExpress->sendTransaction('DESTINATION_ADDRESS', $amount, getenv('BITGO_WALLET_PASSPHRASE'));
+      return $sendTransaction;
    }
 }
 
