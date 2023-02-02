@@ -631,7 +631,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function(){
-          var countDownDate = new Date("{{ $order->order_expiration }}").getTime();
+          var countDownDate = new Date("{{ $order->order_expiration }} GMT+00:00").getTime();
             // alert(countDownDate);
             // Update the count down every 1 second
             var x = setInterval(function() {
@@ -648,7 +648,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                 var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
                 // Output the result in an element with id="demo"
-                document.getElementById("clockdiv").innerHTML = minutes + "m " + seconds + "s ";
+                document.getElementById("clockdiv").innerHTML = minutes + " : " + seconds;
 
                 // If the count down is over, write some text 
                 if (distance < 0) {
