@@ -73,6 +73,11 @@
     <script type="text/javascript" src="{{ url('/') }}/assets/js/libs/jsqr.js" defer></script>
     <script type="text/javascript" src="{{ url('/') }}/assets/js/libs/webln.min.js" defer></script>
 </head>
+<?php
+$start_time = \Carbon\Carbon::parse($order->created_at);
+$finish_time = \Carbon\Carbon::parse($order->order_expiration);
+$order_timer = $finish_time->diffInMinutes($finish_time, true);
+?>
 
 <body class="index">
     <main>
@@ -354,11 +359,12 @@
                                             <div class="order-time new">
                                                 <label data-remaining="Time remaining"
                                                     data-status="Order status"></label>
-                                                <div><span id="order_time" class="hl"
-                                                        data-time="{{ $order->order_expiration }}"
+                                                <div>
+                                                    <span id="clockdiv" class="hl" {{-- data-time="{{ $order_timer }}" --}}
                                                         data-expired="Order expired" data-exchange="Received"
                                                         data-done="Completed" data-emergency="User response"
-                                                        data-refund="Refunded"></span></div>
+                                                        data-refund="Refunded"></span>
+                                                </div>
                                             </div>
                                             <div>
                                                 <label>Order type</label>
@@ -429,7 +435,7 @@
                                         <li id="timeline_pending" class="">
                                             <div><span class="ico pending"></span><label
                                                     class="foremergency">{{ __('Waiting
-                                                                                                                                                            for user response') }}</label><label>{{ __('Awaiting confirmations') }}</label>
+                                                                                                                                                                                                                for user response') }}</label><label>{{ __('Awaiting confirmations') }}</label>
                                             </div>
                                         </li>
                                         <li id="timeline_exchange">
@@ -454,8 +460,8 @@
                                     </div>
                                     <div class="order-note"><em
                                             class="ico coin btc">­</em>{{ __('Bitcoin transaction
-                                                                                                                                confirmation speed depends on the level of blockchain network congestion, more
-                                                                                                                                in our') }}
+                                                                                                                                                                            confirmation speed depends on the level of blockchain network congestion, more
+                                                                                                                                                                            in our') }}
                                         <a
                                             href="{{ url('/') }}/blog/guides/why-bitcoin-is-not-confirmed">{{ __('article') }}</a>
                                     </div>
@@ -608,7 +614,7 @@
             <div class="cookie-cell">
                 <p>
                     {{ __('We use cookies to provide the best experience on our website. By
-                                                            using') }}
+                                                                                using') }}
                     {{ url('/') }} you agree to
                     <a href="{{ url('/') }}/privacy-policy.html">{{ __('Privacy Policy') }}</a>
                     {{ __('and') }}
@@ -621,54 +627,37 @@
             </div>
         </div>
     </template>
-    <script>
-        $(document).ready(function() {
-
-            function getTimeRemaining(endtime) {
-                var t = endtime - new Date().getTime();
-                var seconds = Math.floor((t / 1000) % 60);
-                var minutes = Math.floor((t / 1000 / 60) % 60);
-                var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
-                var days = Math.floor(t / (1000 * 60 * 60 * 24));
-                return {
-                    'total': t,
-                    'days': days,
-                    'hours': hours,
-                    'minutes': minutes,
-                    'seconds': seconds
-                };
-            }
-
-            function initializeClock(id, endtime) {
-                var clock = document.getElementById(id);
-                var daysSpan = clock.querySelector('.days');
-                var hoursSpan = clock.querySelector('.hours');
-                var minutesSpan = clock.querySelector('.minutes');
-                var secondsSpan = clock.querySelector('.seconds');
-
-                function updateClock() {
-                    var t = getTimeRemaining(endtime);
-
-                    daysSpan.innerHTML = t.days;
-                    hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
-                    minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
-                    secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-
-                    if (t.total <= 0) {
-                        clearInterval(timeinterval);
-                    }
-                }
-
-                updateClock();
-                var timeinterval = setInterval(updateClock, 1000);
-            }
-
-            var deadline = Date.parse('Jan 16, 2017');
-            initializeClock('clockdiv', deadline);
-
-        });
-    </script>
     @include('footer')
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function(){
+          var countDownDate = new Date("{{ $order->order_expiration }}").getTime();
+            // alert(countDownDate);
+            // Update the count down every 1 second
+            var x = setInterval(function() {
+
+                // Get todays date and time
+                var now = new Date().getTime();
+
+                // Find the distance between now an the count down date
+                var distance = countDownDate - now;
+
+                // Time calculations for days, hours, minutes and seconds
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                // Output the result in an element with id="demo"
+                document.getElementById("clockdiv").innerHTML = minutes + "m " + seconds + "s ";
+
+                // If the count down is over, write some text 
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("clockdiv").innerHTML = "EXPIRED";
+                }
+            }, 1000);
+        })
+    </script>
 </body>
 
 </html>

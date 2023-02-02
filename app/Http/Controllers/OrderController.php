@@ -151,15 +151,19 @@ class OrderController extends Controller
             "toQty"         =>  $receive_amount,
             "type"          =>  $request->type,
         ];
-        $data['receive_amount'] = $receive_amount;
-        $data['receive_address'] = get_wallet_address($request->fromCurrency);
+        
+        $get_wallet_address = get_wallet_address($request->fromCurrency);
+        $data['receive_amount']  = $receive_amount;
+        $data['receive_address'] = $request->toAddress;
+        $data['send_address']    = $get_wallet_address['address'];
+        $data['payment_data']    = $get_wallet_address;
         
         $saveOrder = save_order($data);
         
-        echo json_encode([
-            $saveOrder->order_id
-        ]);
-        exit;
+        // echo json_encode([
+        //     $saveOrder->order_id
+        // ]);
+        // exit;
 
         return response()->json([
             'code' => 0,

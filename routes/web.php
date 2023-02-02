@@ -44,9 +44,8 @@ Route::group(['middleware' => 'web'], function () {
 
     // Route::get('b', [BinanceController::class, 'balance']);
     Route::get('a', function(){
-        $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN_TESTNET, true);
-        $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
-        return $createAddress = $bitgo->createWalletAddress();
+        $get_wallet_address = get_wallet_address("BTC");
+        return $get_wallet_address;
     });
 
 

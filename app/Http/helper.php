@@ -307,7 +307,7 @@ if (!function_exists('save_order')) {
    function save_order($data)
    {
       $r = request();
-      $orderId = uniqid("ORD-", true);
+      $orderId = uniqid("ORD-", false);
       $rate = getExchangeVal($r->fromCurrency, $r->toCurrency);
       $save = Order::create([
          'user_id'         => auth()->id(),
@@ -315,6 +315,7 @@ if (!function_exists('save_order')) {
          'from_currency'   => $r->fromCurrency,
          'to_currency'     => $r->toCurrency,
          'send_amount'     => $r->fromQty,
+         'send_address'    => $data['send_address'],
          'receive_amount'  => $data['receive_amount'],
          'receive_address' => $data['receive_address'],
          'order_type'      => $r->type,
@@ -379,6 +380,21 @@ if (!function_exists('currency_btc')) {
    function currency_btc($currency, $amount)
    {
       // return Carbon::createFromTimeStamp(strtotime($datetime))->diffForHumans();
+   }
+}
+
+if (!function_exists('get_wallet_address')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function get_wallet_address()
+   {
+      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN_TESTNET, true);
+      $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
+      $createAddress = $bitgo->createWalletAddress();
+      return $createAddress;
    }
 }
 
@@ -476,7 +492,7 @@ if (!function_exists('ajaxEchangePrice')) {
                'precision' => 8,
                'min' => 0.00040829,
                'max' => 10,
-               'usd' => getExchangeVal($req->fromCurrency, "USD"),
+               'usd' => getExchangeVal($req->fromCurrency, "USD") * $req->fromQty,
                'btc' => ($req->fromQty),
             ],
             'to' => [
