@@ -56,7 +56,7 @@ Route::group(['middleware' => 'web'], function () {
             echo 'Error:' . curl_error($ch);
         }
         curl_close($ch);
-        return response()->json($result);
+        return response()->json(json_decode($result));
     });
 
 

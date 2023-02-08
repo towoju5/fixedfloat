@@ -423,7 +423,11 @@ if (!function_exists('transfer_crypto')) {
       //for test only
       $hostname = 'localhost';
       $port = 3080;
-      $coin = CurrencyCode::BITCOIN_TESTNET;
+      // $coin = CurrencyCode::BITCOIN_TESTNET;
+
+      $coin = $data['coin'];
+      $addr = $data['wallet_address'];
+
       // Initiate transfer process.
       $password = 'YLSAcPpFVG6@vE4' ?? '0000000';
 
@@ -434,10 +438,10 @@ if (!function_exists('transfer_crypto')) {
       /**
        * Send the amount in satoshi
       */
-      $value_in_btc = 0.25;
+      $value_in_btc = $data['amount'];
       $amount = BitGoSDK::toSatoshi($value_in_btc);
 
-      $sendTransaction = $bitgoExpress->sendTransaction('DESTINATION_ADDRESS', $amount, getenv('BITGO_WALLET_PASSPHRASE'));
+      $sendTransaction = $bitgoExpress->sendTransaction($addr, $amount, getenv('BITGO_WALLET_PASSPHRASE'));
       return $sendTransaction;
    }
 }
@@ -492,7 +496,7 @@ if (!function_exists('ajaxEchangePrice')) {
                'precision' => 8,
                'min' => 0.00040829,
                'max' => 10,
-               'usd' => getExchangeVal($req->fromCurrency, "USD") * $req->fromQty,
+               'usd' => number_format(getExchangeVal($req->fromCurrency, "USD") * $req->fromQty, 2),
                'btc' => ($req->fromQty),
             ],
             'to' => [
@@ -504,7 +508,7 @@ if (!function_exists('ajaxEchangePrice')) {
                'precision' => 8,
                'min' => 0, //$main['toAssetMinAmount'],
                'max' => 0, //$main['toAssetMaxAmount'],
-               'usd' => getExchangeVal($req->toCurrency, "USD") * $amount,
+               'usd' => number_format(getExchangeVal($req->toCurrency, "USD") * $amount, 2),
             ],
             'error' => 0,
             'status' => [],
