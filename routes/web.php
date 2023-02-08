@@ -44,8 +44,19 @@ Route::group(['middleware' => 'web'], function () {
 
     // Route::get('b', [BinanceController::class, 'balance']);
     Route::get('a', function(){
-        $get_wallet_address = get_wallet_address("BTC");
-        return $get_wallet_address;
+        // $get_wallet_address = get_wallet_address("BTC");
+        // return $get_wallet_address;
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'localhost:3080/api/v2/ping');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+        return response()->json($result);
     });
 
 
