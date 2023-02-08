@@ -19,8 +19,8 @@ if (!function_exists('kucoin')) {
     */
    function kucoin()
    {
-      $kucoin = KuCoinApi::setBaseUri(getenv('KUCOIN_BASE_URL'));
-      return $kucoin;
+      // $kucoin = KuCoinApi::setBaseUri(getenv('KUCOIN_BASE_URL'));
+      // return $kucoin;
    }
 }
 
