@@ -3,25 +3,25 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>FixedFloat | Instant cryptocurrency exchange</title>
-    <meta name="title" content="FixedFloat | Instant cryptocurrency exchange" />
-    <meta property="og:title" content="FixedFloat | Instant cryptocurrency exchange" />
+    <title>Coinunify | Instant cryptocurrency exchange</title>
+    <meta name="title" content="Coinunify | Instant cryptocurrency exchange" />
+    <meta property="og:title" content="Coinunify | Instant cryptocurrency exchange" />
     <meta name="description"
         content="Instant cryptocurrency exchange with Lightning Network! Best rates and large volumes of currencies. Try now!" />
     <meta property="og:description"
         content="Instant cryptocurrency exchange with Lightning Network! Best rates and large volumes of currencies. Try now!" />
-    <meta property="og:site_name" content="FixedFloat" />
+    <meta property="og:site_name" content="Coinunify" />
     <meta property="og:url" content="{{ url('/') }}/index.html" />
-    <meta property="twitter:site" content="@FixedFloat" />
-    <meta property="twitter:creator" content="@FixedFloat" />
+    <meta property="twitter:site" content="@Coinunify" />
+    <meta property="twitter:creator" content="@Coinunify" />
     <meta property="twitter:domain" content="{{ url('/') }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta property="og:image" content="{{ url('/') }}/assets/images/public/ogimage.jpg" />
-    <meta name="title" content="FixedFloat | Instant cryptocurrency exchange" />
-    <meta property="og:title" content="FixedFloat | Instant cryptocurrency exchange" />
+    <meta name="title" content="Coinunify | Instant cryptocurrency exchange" />
+    <meta property="og:title" content="Coinunify | Instant cryptocurrency exchange" />
     <meta property="og:description"
         content="Instant cryptocurrency exchange with Lightning Network! Best rates and large volumes of currencies. Try now!" />
     <link rel="shortcut icon" href="{{ url('/') }}/assets/images/favicon.png" />
@@ -115,7 +115,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                                     <li class="menu-head"><span>Account</span></li>
                                     <li><a href="{{ url('login') }}">Sign in</a></li>
                                     <li><a href="{{ url('register') }}">Sign up</a></li>
-                                    <li class="menu-head"><span>FixedFloat</span></li>
+                                    <li class="menu-head"><span>Coinunify</span></li>
                                     <li><a href="{{ url('page/about') }}">About</a></li>
                                     <li><a href="{{ url('page/blog') }}">Blog</a></li>
                                     <li><a href="{{ url('page/faq') }}">FAQ</a></li>
@@ -128,12 +128,12 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                     </div>
                     <nav class="clrfix">
                         <a href="{{ url('/') }}/" id="logo" class="logo">
-                            <span class="logo-text-fixed" id="logo_text_from" data-value="eth"></span>
+                            <span class="logo-text-fixed" id="logo_text_from" data-value="{{ $order->to_currency }}"></span>
                             <div class="ico">
-                                <span class="logo-arrow-from" id="logo_arrow_from" data-value="eth"></span><span
-                                    class="logo-arrow-to" id="logo_arrow_to" data-value="btc"></span>
+                                <span class="logo-arrow-from" id="logo_arrow_from" data-value="{{ $order->to_currency }}"></span><span
+                                    class="logo-arrow-to" id="logo_arrow_to" data-value="{{ $order->from_currency }}"></span>
                             </div>
-                            <span class="logo-text-float" id="logo_text_to" data-value="btc"></span>
+                            <span class="logo-text-float" id="logo_text_to" data-value="{{ $order->from_currency }}"></span>
                         </a>
                         <div class="nav userbar hoverhl">
                             @if (auth()->check())
@@ -304,8 +304,8 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                     <div class="order-body">
                         <section class="order-direction clrfix">
                             <div class="dir-from">
-                                <div class="dir-cont" data-value="btc">
-                                    <div class="coin-ico svgcoin btc"></div>
+                                <div class="dir-cont" data-value="{{ $order->from_currency }}">
+                                    <div class="coin-ico svgcoin {{ strtolower($order->from_currency) }}"></div>
                                     <div class="coin-head">{{ __('You send') }}</div>
                                     <div class="coin-value" id="order_send_value">{{ $order->send_amount }}
                                         {{ $order->from_currency }}</div>
@@ -318,8 +318,8 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                                 <div class="ico arrow"></div>
                             </div>
                             <div class="dir-to">
-                                <div class="dir-cont" data-value="eth">
-                                    <div class="coin-ico svgcoin eth"></div>
+                                <div class="dir-cont" data-value="{{ $order->to_currency }}">
+                                    <div class="coin-ico svgcoin {{ strtolower($order->to_currency) }}"></div>
                                     <div class="coin-head">{{ __('You receive') }}</div>
                                     <div class="coin-value" id="order_receive_value">{{ $order->receive_amount }}
                                         {{ $order->to_currency }}</div>
@@ -398,7 +398,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                                                 <p class="order-p-amount">{{ __('Send') }} <b
                                                         class="order-amount pseudo-hint-blue" data-hint="Copied"
                                                         data-copy="0.01245621"
-                                                        data-value="btc">{{ $order->send_amount }}
+                                                        data-value="{{ $order->from_currency }}">{{ $order->send_amount }}
                                                         {{ $order->from_currency }}</b> {{ __('to the address') }}:
                                                 </p>
                                                 <p class="order-p-address"><span class="order-address-wrap"><b
@@ -414,7 +414,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                                             </p>
                                         </div>
                                         <div class="order-data-destination">
-                                            <p><label>{{ __('Receiving address ETH') }}</label><br><span
+                                            <p><label>{{ __('Receiving address ') }} {{ $order->to_currency }}</label><br><span
                                                     class="order-address-destination">{{ $order->receive_address }}</span>
                                             </p>
                                         </div>
@@ -426,7 +426,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                             {{-- <section class="order-emergency clrfix" id="section_emergency"></section> --}}
                             <section class="order-timeline clrfix" id="section_timeline">
                                 <div class="timeline-container">
-                                    <ol id="timeline_steps" class="clrfix" data-value="eth">
+                                    <ol id="timeline_steps" class="clrfix" data-value="{{ $order->to_currency }}">
                                         <li id="timeline_new" class="active">
                                             <div><span
                                                     class="ico deposit"></span><label>{{ __('Awaiting deposit') }}</label>
@@ -459,7 +459,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                                         {{ __('confirmation of the Bitcoin blockchain for the exchange') }}
                                     </div>
                                     <div class="order-note"><em
-                                            class="ico coin btc">­</em>{{ __('Bitcoin transaction
+                                            class="ico coin {{ $order->from_currency }}">­</em>{{ __('Bitcoin transaction
                                                                                                                                                                             confirmation speed depends on the level of blockchain network congestion, more
                                                                                                                                                                             in our') }}
                                         <a
@@ -468,7 +468,7 @@ $order_timer = $finish_time->diffInMinutes($finish_time, true);
                                     <div class="order-note"><em class="ico coin segwit">­</em>We use segwit Bitcoin
                                         addresses for faster and cheaper transactions, if your wallet does not support
                                         this type of address, contact technical support to change the address</div>
-                                    <div class="order-note"><em class="ico coin eth">­</em>We do not support sending
+                                    <div class="order-note"><em class="ico coin {{ $order->to_currency }}">­</em>We do not support sending
                                         and
                                         receiving Ethereum using smart contracts</div>
                                     <div class="order-note"><em class="ico recalc">­</em>If the amount of the

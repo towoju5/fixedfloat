@@ -36,6 +36,12 @@ class HomeController extends Controller
     {
         $toCurrency = $request->toCurrency;
         $fromCurrency = $request->fromCurrency;
+        if(!$request->has('fromQty')){
+            $fromQty = getExchangeVal($fromCurrency, $toCurrency);
+            $request->merge([
+                'fromQty' => ($request->toQty * $fromQty)
+            ]);
+        }
         $data = [
             'quoteId'     => _getTransactionId(),
             'fromAsset'   => $request->fromCurrency,
@@ -45,12 +51,7 @@ class HomeController extends Controller
 
         $test = getExchangeVal($fromCurrency, $toCurrency);
         $cal = $test * $request->fromQty;
-        // return $cal;
-
-        // $main   = $pro->getConvertRate($data);
-        // $result = $pro->getConvertgetQuote($data);
         $decode = ajaxEchangePrice([], [], $cal);
-        // // return response()->json([$result, $main]);
         return response()->json($decode);
     }
 

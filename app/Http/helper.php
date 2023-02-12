@@ -389,9 +389,9 @@ if (!function_exists('get_wallet_address')) {
     * @param string currency
     * @param float-decimal amount
     */
-   function get_wallet_address()
+   function get_wallet_address($currency)
    {
-      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), CurrencyCode::BITCOIN_TESTNET, true);
+      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), $currency, getenv("BITGO_SANDBOX"));
       $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
       $createAddress = $bitgo->createWalletAddress();
       return $createAddress;
@@ -425,7 +425,7 @@ if (!function_exists('transfer_crypto')) {
       $port = 3080;
       // $coin = CurrencyCode::BITCOIN_TESTNET;
 
-      $coin = $data['coin'];
+      $coin = strtolower($data['coin']);
       $addr = $data['wallet_address'];
 
       // Initiate transfer process.
@@ -442,6 +442,21 @@ if (!function_exists('transfer_crypto')) {
       $amount = BitGoSDK::toSatoshi($value_in_btc);
 
       $sendTransaction = $bitgoExpress->sendTransaction($addr, $amount, getenv('BITGO_WALLET_PASSPHRASE'));
+      return $sendTransaction;
+   }
+}
+
+if (!function_exists('crypto_transaction')) {
+   /*
+    * Convert fee to BTC
+    * @param string currency
+    * @param float-decimal amount
+    */
+   function crypto_transaction($currency, $transactionId = "63e8c7b94f989c0007c9ab6b7c6d5e81")
+   {
+      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), $currency, getenv("BITGO_SANDBOX"));
+      $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
+      $sendTransaction = $bitgo->getWalletTransfer($transactionId);
       return $sendTransaction;
    }
 }
