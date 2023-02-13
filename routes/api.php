@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Order;
+use App\Models\Send;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use neto737\BitGoSDK\BitGoExpress;
@@ -41,16 +42,27 @@ Route::get('webhook', function (Request $request) {
               // transaction is successfully received in wallet so give value.
               $order = Order::where(["send_address" => $walletAddress, "order_status" => "pending"])->first();
               if ($order->send_amount >= $walletAmount) {
-                  // full payment received
-                  // send coin to customer
+                  // full payment received -- send coin to customer
                   $send = transfer_crypto($order->receive_address, $order->receive_amount, $order->to_currency);
                   // log history of sent coins to customers
+                  Send::create([
+                    "address"   =>  $order->receive_address,
+                    "amount"    =>  $order->receive_amount,
+                    "currency"  =>  $order->to_currency,
+                    "raw_data"  =>  $send
+                  ]);
+
+                  $order->order_status = "completed";
+                  $order->order_left = 0;
+                  $order->save();
               } else {
                   // half payment received
                   // what should happen? process the half or wait for balance?
               }
           }
       }
+
+      return http_response_code(200);
   }
 });
 
