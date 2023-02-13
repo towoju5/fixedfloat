@@ -418,31 +418,34 @@ if (!function_exists('transfer_crypto')) {
     * @param string currency
     * @param float-decimal amount
     */
-   function transfer_crypto($data)
+   function transfer_crypto($cust_addr, $cust_amount, $cust_coin)
    {
-      //for test only
       $hostname = 'localhost';
       $port = 3080;
-      // $coin = CurrencyCode::BITCOIN_TESTNET;
+      $coin = $cust_coin;  //'tbtc';
 
-      $coin = strtolower($data['coin']);
-      $addr = $data['wallet_address'];
+      $bitgo = new BitGoSDK('YOUR_API_KEY_HERE', $coin, true);
 
-      // Initiate transfer process.
-      $password = 'YLSAcPpFVG6@vE4' ?? '0000000';
+      /**
+         * To send any transaction with BitGoExpress SDK you need to unlock your wallet
+         * If you're not using testnet to send coins, you need to unlock your wallet with
+         * your OTP password (2FA)
+         */
+      //$bitgo->unlockSession('0000000');
 
       $bitgoExpress = new BitGoExpress($hostname, $port, $coin);
       $bitgoExpress->accessToken = getenv('BITGO_API_KEY_HERE');
       $bitgoExpress->walletId = getenv("BITGO_WALLET_ID_HERE");
 
       /**
-       * Send the amount in satoshi
-      */
-      $value_in_btc = $data['amount'];
+         * Send the amount in satoshi
+         */
+      $value_in_btc = $cust_amount;
       $amount = BitGoSDK::toSatoshi($value_in_btc);
+      
 
-      $sendTransaction = $bitgoExpress->sendTransaction($addr, $amount, getenv('BITGO_WALLET_PASSPHRASE'));
-      return $sendTransaction;
+      $sendTransaction = $bitgoExpress->sendTransaction($cust_addr, $amount, getenv('BITGO_WALLET_PASSPHRASE'));
+      return response()->json($sendTransaction);
    }
 }
 
@@ -507,7 +510,7 @@ if (!function_exists('ajaxEchangePrice')) {
                'network' => $req->fromCurrency,
                'coin' => $req->fromCurrency,
                'amount' => $req->fromQty,
-               'rate' => 0,
+               'rate' => number_format(getExchangeVal($req->fromCurrency, $req->toCurrency), 2),
                'precision' => 8,
                'min' => 0.00040829,
                'max' => 10,

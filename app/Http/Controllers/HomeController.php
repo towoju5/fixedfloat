@@ -39,7 +39,7 @@ class HomeController extends Controller
         if(!$request->has('fromQty')){
             $fromQty = getExchangeVal($fromCurrency, $toCurrency);
             $request->merge([
-                'fromQty' => ($request->toQty * $fromQty)
+                'fromQty' => 0.00921795
             ]);
         }
         $data = [
