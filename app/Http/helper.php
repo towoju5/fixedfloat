@@ -13,6 +13,8 @@ use neto737\BitGoSDK\BitGoExpress;
 use neto737\BitGoSDK\BitGoSDK;
 use neto737\BitGoSDK\Enum\CurrencyCode;
 
+
+
 if (!function_exists('kucoin')) {
    /**
     * Convert data to array
@@ -383,6 +385,19 @@ if (!function_exists('currency_btc')) {
    }
 }
 
+if (!function_exists('get_wallet_id')) {
+   /*
+    * Get wallet params from ::DB
+    * @param string currency
+    * @response string or null
+    */
+   function get_wallet_id($currency)
+   {
+      $walletId = DB::table('coin_wallet_id')->select()->where("coin", $currency)->first();
+      return $walletId->wallet_id ?? null;
+   }
+}
+
 if (!function_exists('get_wallet_address')) {
    /*
     * Convert fee to BTC
@@ -391,8 +406,8 @@ if (!function_exists('get_wallet_address')) {
     */
    function get_wallet_address($currency)
    {
-      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), $currency, getenv("BITGO_SANDBOX"));
-      $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
+      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), strtolower($currency), true);
+      $bitgo->walletId = get_wallet_id($currency);
       $createAddress = $bitgo->createWalletAddress();
       return $createAddress;
    }
@@ -418,47 +433,43 @@ if (!function_exists('transfer_crypto')) {
     * @param string currency
     * @param float-decimal amount
     */
-   function transfer_crypto($cust_addr, $cust_amount, $cust_coin)
+   function transfer_crypto($data)
    {
+      //for test only
       $hostname = 'localhost';
       $port = 3080;
-      $coin = $cust_coin;  //'tbtc';
+      // $coin = CurrencyCode::BITCOIN_TESTNET;
 
-      $bitgo = new BitGoSDK('YOUR_API_KEY_HERE', $coin, true);
+      $coin = $data['coin'];
+      $addr = $data['wallet_address'];
 
-      /**
-         * To send any transaction with BitGoExpress SDK you need to unlock your wallet
-         * If you're not using testnet to send coins, you need to unlock your wallet with
-         * your OTP password (2FA)
-         */
-      //$bitgo->unlockSession('0000000');
+      // Initiate transfer process.
+      $password = 'YLSAcPpFVG6@vE4' ?? '0000000';
 
       $bitgoExpress = new BitGoExpress($hostname, $port, $coin);
       $bitgoExpress->accessToken = getenv('BITGO_API_KEY_HERE');
       $bitgoExpress->walletId = getenv("BITGO_WALLET_ID_HERE");
 
       /**
-         * Send the amount in satoshi
-         */
-      $value_in_btc = $cust_amount;
+       * Send the amount in satoshi
+      */
+      $value_in_btc = $data['amount'];
       $amount = BitGoSDK::toSatoshi($value_in_btc);
-      
 
-      $sendTransaction = $bitgoExpress->sendTransaction($cust_addr, $amount, getenv('BITGO_WALLET_PASSPHRASE'));
-      return response()->json($sendTransaction);
+      $sendTransaction = $bitgoExpress->sendTransaction($addr, $amount, getenv('BITGO_WALLET_PASSPHRASE'));
+      return $sendTransaction;
    }
 }
 
 if (!function_exists('crypto_transaction')) {
    /*
-    * Convert fee to BTC
-    * @param string currency
-    * @param float-decimal amount
+    * get transaction for ID
+    * @param string transactionId
     */
-   function crypto_transaction($currency, $transactionId = "63e8c7b94f989c0007c9ab6b7c6d5e81")
+   function crypto_transaction($transactionId = "xoxo", $currency="tbtc")
    {
-      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), $currency, getenv("BITGO_SANDBOX"));
-      $bitgo->walletId = getenv("BITGO_WALLET_ID_HERE");
+      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), strtolower($currency), true);
+      $bitgo->walletId = get_wallet_id($currency);
       $sendTransaction = $bitgo->getWalletTransfer($transactionId);
       return $sendTransaction;
    }
@@ -472,8 +483,9 @@ if (!function_exists('getExchangeVal')) {
     */
    function getExchangeVal($fromCurrency, $toCurrency)
    {
-      $url = Http::get("https://min-api.cryptocompare.com/data/price?fsym=$fromCurrency&tsyms=$toCurrency");
-      return $url[$toCurrency];
+           $url = Http::get("https://min-api.cryptocompare.com/data/price?fsym=$fromCurrency&tsyms=$toCurrency");
+           return $url[$toCurrency];
+      
    }
 }
 
@@ -509,8 +521,8 @@ if (!function_exists('ajaxEchangePrice')) {
                'currency' => $req->fromCurrency,
                'network' => $req->fromCurrency,
                'coin' => $req->fromCurrency,
-               'amount' => $req->fromQty,
-               'rate' => number_format(getExchangeVal($req->fromCurrency, $req->toCurrency), 2),
+               'amount' => number_format($req->fromQty, 8),
+               'rate' => number_format(getExchangeVal($req->fromCurrency, $req->toCurrency), 8),
                'precision' => 8,
                'min' => 0.00040829,
                'max' => 10,
@@ -521,8 +533,8 @@ if (!function_exists('ajaxEchangePrice')) {
                'currency' => $req->toCurrency,
                'network' => $req->toCurrency,
                'coin' => $req->toCurrency,
-               'amount' => $amount,
-               'rate' => 0,
+               'amount' => number_format($amount, 8),
+               'rate' => number_format(getExchangeVal($req->toCurrency, $req->fromCurrency), 8),
                'precision' => 8,
                'min' => 0, //$main['toAssetMinAmount'],
                'max' => 0, //$main['toAssetMaxAmount'],

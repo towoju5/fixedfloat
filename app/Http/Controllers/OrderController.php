@@ -138,7 +138,7 @@ class OrderController extends Controller
             "fromQty"       =>  "required",
         ]);
 
-        // $create 
+        // $create quote
         $amount = getExchangeVal($request->fromCurrency, $request->toCurrency);
         $fee = $this->charges($amount * $request->fromQty);
         $receive_amount = $fee;

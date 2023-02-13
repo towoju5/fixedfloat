@@ -19,6 +19,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\App;
 use neto737\BitGoSDK\BitGoSDK;
 use neto737\BitGoSDK\Enum\CurrencyCode;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,26 +38,32 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', function () {
         return view('welcome');
     })->name('home');
+    
+    Route::any('webhook', function () {
+        //if (request()->post()) {
+            $raw_payload = file_get_contents('php://input');
+            $payload = json_decode($raw_payload, true);
+            error_log(json_encode($raw_payload));
+            Log::info($raw_payload);
+            return http_response_code(200);
+        //}
+        //return http_response_code(405);
+    })->name('webhook');
 
 
 
-    // Binance Routes
+    // Binance Routes  63e8bce38ca3130007e23313cff9065c
 
-    // Route::get('b', [BinanceController::class, 'balance']);
+
+    Route::get('b', function(){
+        return crypto_transaction('63e8c7b94f989c0007c9ab6b7c6d5e81');
+    });
     Route::get('a', function(){
-        // $get_wallet_address = get_wallet_address("BTC");
-        // return $get_wallet_address;
-        $ch = curl_init();
-
-        curl_setopt($ch, CURLOPT_URL, 'localhost:3080/api/v2/ping');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $result = curl_exec($ch);
-        if (curl_errno($ch)) {
-            echo 'Error:' . curl_error($ch);
-        }
-        curl_close($ch);
-        return response()->json(json_decode($result));
+        $data['coin'] = "TBTC";
+        $data['wallet_address'] = "mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB";
+        $data['amount'] = "0.0010";
+        $new = transfer_crypto($data);
+        return $new;
     });
 
 

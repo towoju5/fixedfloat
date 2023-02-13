@@ -14,6 +14,7 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'ajax/exchangePrice',
         'ajax/exchangeAddressInfo',
-        'ajax/exchangeMake'
+        'ajax/exchangeMake',
+        'webhook'
     ];
 }
