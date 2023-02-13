@@ -35,7 +35,7 @@ Route::get('webhook', function (Request $request) {
       $payload = json_decode($raw_payload, true);
       // wallet funded by customer
       if (is_array($payload['type'] == "receive")) {
-          $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), $payload['coin'], getenv("BITGO_SANDBOX"));
+          $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), strtolower($payload['coin']), getenv("BITGO_SANDBOX"));
           $walletAddress  = $payload['outputs'][1]->address;
           $walletAmount   = $bitgo->toBtc($payload['outputs'][1]->value);
           if($payload['state'] == "confirmed") {
