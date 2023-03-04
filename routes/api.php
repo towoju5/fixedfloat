@@ -71,29 +71,15 @@ Route::get('webhook', function (Request $request) {
 Route::get('ses', function () {
   $hostname = 'localhost';
   $port = 3080;
-  $coin = 'tbtc';
+  $coin = 'ETH';
 
   $bitgo = new BitGoSDK('YOUR_API_KEY_HERE', $coin, true);
 
-  /**
-   * To send any transaction with BitGoExpress SDK you need to unlock your wallet
-   * If you're not using testnet to send coins, you need to unlock your wallet with
-   * your OTP password (2FA)
-   */
-  //$bitgo->unlockSession('0000000');
-
   $bitgoExpress = new BitGoExpress($hostname, $port, $coin);
   $bitgoExpress->accessToken = getenv('BITGO_API_KEY_HERE');
-  $bitgoExpress->walletId = getenv("BITGO_WALLET_ID_HERE");
 
-  /**
-   * Send the amount in satoshi
-   */
-  $value_in_btc = 0.0001;
-  $amount = BitGoSDK::toSatoshi($value_in_btc);
-  
-
-  $sendTransaction = $bitgoExpress->sendTransaction('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB', $amount, getenv('BITGO_WALLET_PASSPHRASE'));
+  $sendTransaction = $bitgoExpress->generateWallet("ETH Wallet", getenv('BITGO_WALLET_PASSPHRASE'));
+  // $sendTransaction = $bitgoExpress->sendTransaction('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB', $amount, getenv('BITGO_WALLET_PASSPHRASE'));
   return response()->json($sendTransaction);
 });
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\PayoutsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\BinanceController;
+use App\Http\Controllers\CoinWalletController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KucoinController;
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\App;
 use neto737\BitGoSDK\BitGoSDK;
 use neto737\BitGoSDK\Enum\CurrencyCode;
 use Illuminate\Support\Facades\Log;
-
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,17 +36,52 @@ use Illuminate\Support\Facades\Log;
 
 Route::group(['middleware' => 'web'], function () {
 
-    Route::get('/', function () {
+    Route::get('/', function (Request $request) {
         return view('welcome');
     })->name('home');
-    
+
+    Route::get('rate', function (Request $request) {
+        $payload = [
+            "send"              =>  $request->send,
+            "amount"            =>  $request->amount,
+            "receive"           =>  $request->receive,
+            "send_network"      =>  $request->send_network,
+            "receive_network"   =>  $request->receive_network,
+        ];
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.easybit.com/rate?'.http_build_query($payload));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+
+        $headers = array();
+        $headers[] = 'Api-Key: test_Loh46ih4uoRKGJaGKae3WP8tY';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        return response()->json(result($result));
+    })->name('home');
+
+
+
+
+
+
+
+
     Route::any('webhook', function () {
         //if (request()->post()) {
-            $raw_payload = file_get_contents('php://input');
-            $payload = json_decode($raw_payload, true);
-            error_log(json_encode($raw_payload));
-            Log::info($raw_payload);
-            return http_response_code(200);
+        $raw_payload = file_get_contents('php://input');
+        $payload = json_decode($raw_payload, true);
+        error_log(json_encode($raw_payload));
+        Log::info($raw_payload);
+        return http_response_code(200);
         //}
         //return http_response_code(405);
     })->name('webhook');
@@ -55,10 +91,10 @@ Route::group(['middleware' => 'web'], function () {
     // Binance Routes  63e8bce38ca3130007e23313cff9065c
 
 
-    Route::get('b', function(){
+    Route::get('b', function () {
         return crypto_transaction('63e8c7b94f989c0007c9ab6b7c6d5e81');
     });
-    Route::get('a', function(){
+    Route::get('a', function () {
         $data['coin'] = "TBTC";
         $data['wallet_address'] = "mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB";
         $data['amount'] = "0.0010";
@@ -131,10 +167,10 @@ Route::group(['middleware' => 'web'], function () {
         Route::resource('orders',   OrderController::class);
         Route::resource('payouts',  PayoutsController::class);
         Route::resource('users',    UserController::class);
-        // Route::get('affiliate',                     [AffiliateController::class, 'affiliate'])->name('affiliate');
-        // Route::get('get/affiliate',                 [AffiliateController::class, 'list'])->name('affiliate.get');
-        // Route::get('orders',                        [TransactionController::class, 'index'])->name('index');
-
-        // Route::get('referral-list',                     [HistoryController::class, 'referral_list'])->name('referral.list');
+        Route::group(["prefix" => "wallet"], function () {
+            Route::get("list",          [CoinWalletController::class, "list"])->name("wallets.list");
+            Route::get("create/new",    [CoinWalletController::class, "add"])->name("wallets.add");
+            Route::get("delete/{id}",   [CoinWalletController::class, "delete"])->name("wallets.delete");
+        });
     });
 });

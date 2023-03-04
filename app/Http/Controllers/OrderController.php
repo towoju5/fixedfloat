@@ -151,6 +151,14 @@ class OrderController extends Controller
             "toQty"         =>  $receive_amount,
             "type"          =>  $request->type,
         ];
+        $data = [
+            'send'              =>  $request->send,
+            'receive'           =>  $request->receive,
+            'amount'            =>  $request->amount,
+            'receiveAddress'    =>  $request->receiveAddress,
+            'sendNetwork'       =>  $request->sendNetwork,
+            'receiveNetwork'    =>  $request->sendNetwork,
+        ];
         
         $get_wallet_address = get_wallet_address($request->fromCurrency);
         $data['receive_amount']  = $receive_amount;
