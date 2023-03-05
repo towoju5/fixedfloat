@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no" />
     <link href="images/favicon.png" rel="icon" />
-    <title>{{ settings("website_name") }} - Crypto Exchange</title>
+    <title>{{ settings('website_name') }} - Crypto Exchange</title>
     <meta name="description"
         content="This professional design html template is for build a Money Transfer and online payments website." />
     <meta name="author" content="harnishdesign.net" />
@@ -21,10 +21,11 @@
 ============================================= -->
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/font-awesome/css/all.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('vendor/bootstrap-select/css/bootstrap-select.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('vendor/currency-flags/css/currency-flags.min.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}" />
-    <link rel="stylesheet" type="text/css" href="{{asset('css/stylesheet.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/bootstrap-select/css/bootstrap-select.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/currency-flags/css/currency-flags.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/owl.carousel/assets/owl.carousel.min.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/stylesheet.css') }}" />
+    @stack('css')
 </head>
 
 <body>
@@ -46,8 +47,8 @@
                         <!-- Logo
           ============================= -->
                         <div class="logo">
-                            <a class="d-flex" href="index.html" title="Payyed - HTML Template"><img
-                                    src="images/logo-light.png" alt="Payyed" /></a>
+                            <a class="d-flex" href="{{ url('/') }}" title="CoinUnify"><img
+                                    src="{{ settings('website_logo') }}" alt="CoinUnify" /></a>
                         </div>
                         <!-- Logo end -->
                         <!-- Collapse Button
@@ -80,16 +81,18 @@
           ============================== -->
                         <nav class="login-signup navbar navbar-expand">
                             <ul class="navbar-nav">
-                                @if(auth()->check())
-                                <li><a href="{{ url('logout') }}">Logout</a></li>
-                                <li class="align-items-center h-auto ml-sm-3">
-                                    <a class="btn btn-primary d-none d-sm-block" href="{{ url('user/orders') }}">Dashboard</a>
-                                </li>
+                                @if (auth()->check())
+                                    <li><a href="{{ url('logout') }}">Logout</a></li>
+                                    <li class="align-items-center h-auto ml-sm-3">
+                                        <a class="btn btn-primary d-none d-sm-block"
+                                            href="{{ url('user/orders') }}">Dashboard</a>
+                                    </li>
                                 @else
-                                <li><a href="{{ url('login') }}">Sign in</a></li>
-                                <li class="align-items-center h-auto ml-sm-3">
-                                    <a class="btn btn-primary d-none d-sm-block" href="{{ url('register') }}">Sign Up</a>
-                                </li>
+                                    <li><a href="{{ url('login') }}">Sign in</a></li>
+                                    <li class="align-items-center h-auto ml-sm-3">
+                                        <a class="btn btn-primary d-none d-sm-block" href="{{ url('register') }}">Sign
+                                            Up</a>
+                                    </li>
                                 @endif
                             </ul>
                         </nav>

@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use CryptoQr\BitcoinQr;
+use CryptoQr\CryptoQr;
+use CryptoQr\EthereumQr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 use neto737\BitGoSDK\BitGoSDK;
 use neto737\BitGoSDK\Enum\CurrencyCode;
@@ -130,56 +135,56 @@ class OrderController extends Controller
 
     public function createOrder(Request $request)
     {
-        $this->validate($request, [
-            "fromCurrency"  =>  "required",
-            "toCurrency"    =>  "required",
-            "toAddress"     =>  "required",
-            "type"          =>  "required",
-            "fromQty"       =>  "required",
+        $validator = Validator::make($request->all(), [
+            "amount"            =>  "required",
+            "send"              =>  "required",
+            "sendNetwork"       =>  "required",
+            "receiveNetwork"    =>  "required",
+            "receive"           =>  "required",
+            "payload"           =>  "required",
+            "receiveAddress"    =>  "required",
         ]);
-
-        // $create quote
-        $amount = getExchangeVal($request->fromCurrency, $request->toCurrency);
-        $fee = $this->charges($amount * $request->fromQty);
-        $receive_amount = $fee;
+    
+        if ($validator->fails()) {
+            // return Redirect::back()->withErrors($validator);
+            return response()->json($validator->errors());
+        }
 
         $data = [
-            "fromAsset"     =>  $request->fromCurrency,
-            "toAsset"       =>  $request->toCurrency,
-            "toAddress"     =>  $request->toAddress,
-            "fromAmount"    =>  $request->fromQty,
-            "toQty"         =>  $receive_amount,
-            "type"          =>  $request->type,
-        ];
-        $data = [
-            'send'              =>  $request->send,
-            'receive'           =>  $request->receive,
             'amount'            =>  $request->amount,
-            'receiveAddress'    =>  $request->receiveAddress,
+            'send'              =>  $request->send,
             'sendNetwork'       =>  $request->sendNetwork,
-            'receiveNetwork'    =>  $request->sendNetwork,
+            'receiveNetwork'    =>  $request->receiveNetwork,
+            'receive'           =>  $request->receive,
+            'payload'           =>  $request->payload,
+            'receiveAddress'    =>  $request->receiveAddress,
         ];
         
-        $get_wallet_address = get_wallet_address($request->fromCurrency);
-        $data['receive_amount']  = $receive_amount;
-        $data['receive_address'] = $request->toAddress;
-        $data['send_address']    = $get_wallet_address['address'];
-        $data['payment_data']    = $get_wallet_address;
-        
-        $saveOrder = save_order($data);
-        
-        // echo json_encode([
-        //     $saveOrder->order_id
-        // ]);
-        // exit;
+        $get_wallet_address = get_wallet_address($data);
+        // return response()->json($get_wallet_address);
 
-        return response()->json([
-            'code' => 0,
-            'msg' => 'OK',
-            'data' => [
-                'id' => $saveOrder->order_id
-            ]
-        ], 200);
+        if($get_wallet_address['success'] != 1){
+            return back()->with("error", $get_wallet_address['errorMessage']);
+        }
+
+        $response = $get_wallet_address['data'];
+        
+        if($request->receive == "BTC"){
+            $data['qr_code'] = new BitcoinQr($response['sendAddress']);
+        } elseif($request->receive == "ETH"){
+            $data['qr_code'] = new EthereumQr($response['sendAddress']);
+        } else {
+            $data['qr_code'] = new CryptoQr($response['sendAddress']);
+        }
+
+        $data['receive_amount']  = $response['receiveAmount'];
+        $data['receive_address'] = $response['receiveAddress'];
+        $data['send_address']    = $response['sendAddress'];
+        $data['payment_data']    = $response;
+        
+        $saveOrder = save_order($response);
+        
+        return redirect(route("order", $saveOrder->order_id));
 
     }
 

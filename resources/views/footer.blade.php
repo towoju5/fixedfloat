@@ -125,28 +125,8 @@
 
 <!-- Back to Top
 ============================================= -->
-<a id="back-to-top" data-toggle="tooltip" title="Back to Top" href="javascript:void(0)"><i
-        class="fa fa-chevron-up"></i></a>
-
-<!-- Video Modal
-============================================= -->
-<div class="modal fade" id="videoModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content bg-transparent border-0">
-            <button type="button" class="close text-white opacity-10 ml-auto mr-n3 font-weight-400"
-                data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="modal-body p-0">
-                <div class="embed-responsive embed-responsive-16by9">
-                    <iframe class="embed-responsive-item" id="video" allow="autoplay"></iframe>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Video Modal end -->
-
+<a id="back-to-top" data-toggle="tooltip" title="Back to Top" href="javascript:void(0)">
+    <i class="fa fa-chevron-up"></i></a>
 
 <!-- Script -->
 <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
@@ -155,128 +135,9 @@
 <script src="{{ asset('vendor/owl.carousel/owl.carousel.min.js') }}"></script>
 <script src="{{ asset('js/theme.js') }}"></script>
 <script src="https://kit.fontawesome.com/fc49c28ef9.js" crossorigin="anonymous"></script>
-<script>
-    function convertCurrency() {
-        const amount = $("#send_amount").val();
-        const fromCurrency = $("#send_network").val();
-        const toCurrency = $("#receive_network").val();
-        var send, receive, send_network, receive_network
-        send = $("#send").find(":selected").val();
-        receive = $("#receive").find(":selected").val();
-        send_network = $("#send_network").find(":selected").val();
-        receive_network = $("#receive_network").find(":selected").val();
-        const ex_url = "{{ url('/') }}/rate?send=" + send + "&receive=" + receive + "&sendNetwork=" +
-            send_network + "&receiveNetwork=" + receive_network + "&amount=" + amount;
-        console.log(ex_url);
-        fetch(ex_url)
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                let rate = data.data.rate;
-                let total = data.data.receiveAmount;
-                $("#receive_amount").val(total)
-                console.log(data.data);
-                // document.getElementById("receive").value = total;
-                document.getElementById("exchange_result").innerHTML = rate;
-            });
-    }
-</script>
-
-<script type="text/javascript">
-    document.addEventListener("DOMContentLoaded", function() {
-        let F = UI.func;
-        moment.locale("en");
-        Array.from(
-            document.querySelectorAll(".blog-post time[timestamp]")
-        ).forEach(function(obj) {
-            let time = moment(
-                moment.unix(+obj.getAttribute("timestamp")).toDate()
-            ).local();
-            obj.innerHTML = time.format("LL");
-        });
-        Array.from(document.querySelectorAll("#recent_list time")).forEach(
-            function(obj) {
-                let time = moment(
-                    moment.unix(+obj.getAttribute("timestamp")).toDate()
-                ).local();
-                obj.innerHTML = time.fromNow();
-            }
-        );
-        Array.from(
-            document.querySelectorAll("#recent_list .recent-timer")
-        ).forEach(function(obj) {
-            obj.innerHTML = APP.timeToText(obj.getAttribute("data-time"));
-        });
-
-        let Game = undefined;
-        let stopAnimation = F.localStorage.get(
-            "fixedfloat_index_animation_stop"
-        );
-
-        F.bind("canvas_fly_game_stop_btn", "click", function() {
-            if (!Game) {
-                return;
-            }
-            if (Game.running) {
-                Game.stop();
-                if (typeof gtag == "function") {
-                    gtag("event", "game-stop", {
-                        event_category: "activity"
-                    });
-                }
-                this.innerHTML = "Run background animation";
-                F.localStorage.set("fixedfloat_index_animation_stop", 1);
-            } else {
-                Game.start();
-                if (typeof gtag == "function") {
-                    gtag("event", "game-start", {
-                        event_category: "activity"
-                    });
-                }
-                this.innerHTML = "Stop background animation";
-                F.localStorage.set("fixedfloat_index_animation_stop", 0);
-            }
-        });
-
-        window.onload = function() {
-            let ua = navigator.userAgent.toLowerCase();
-            if (ua.indexOf("safari") != -1 && ua.indexOf("chrome") < 0) {
-                return;
-            }
-            Game = AnimationBubbles(
-                "canvas_fly_game",
-                "canvas_fly_game_stats",
-                +stopAnimation
-            );
-            if (+stopAnimation) {
-                // Game.stop();
-                F.id("canvas_fly_game_stop_btn").innerHTML =
-                    "Run background animation";
-            } else {
-                F.id("canvas_fly_game_stop_btn").innerHTML =
-                    "Stop background animation";
-            }
-        };
-    });
-</script>
-<template id="cookies_accept">
-    <div class="cookie-table">
-        <div class="cookie-cell">
-            <p>
-                {{ __('We use cookies to provide the best experience on our website. By
-                        using FixedFloat.com you agree to') }}
-                <a href="{{ url('/') }}/privacy-policy">{{ __('Privacy Policy') }}</a> and
-                <a href="{{ url('/') }}/terms-of-service">{{ __('Terms of Service') }}</a>.
-            </p>
-        </div>
-        <div class="cookie-cell clrfix">
-            <a class="btn submit bghl close" href="javascript:;">{{ __('Accept') }} &amp; {{ __('Close') }}</a>
-        </div>
-    </div>
-</template>
-
 <script src="//cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+{{-- <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script> --}}
+@stack('js')
 @if (!$errors->isEmpty())
     @foreach ($errors->all(':message') as $input_error)
         <script>

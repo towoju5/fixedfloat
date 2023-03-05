@@ -17,6 +17,7 @@
         "laravel/ui": "^3.4",
         "neto737/bitgosdk-php": "^2.2",
         "questocat/laravel-referral": "^1.0",
+        "reyesoft/crypto-qr": "^0.1.1",
         "stevebauman/location": "^6.5",
         "tanmuhittin/laravel-google-translate": "^2.1",
         "towoju5/fixedfloat": "dev-main",

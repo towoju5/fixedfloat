@@ -5,6 +5,133 @@
 	Overwriting Default Theme Styles for Better Hanlding Updates
 -----------------------------------------------------------------*/
 
+.svgcoin_img {
+	max-width: 50px;
+}
 
+.clrfix:after {
+	clear: both;
+	content: "";
+	display: block;
+	font-size: 0;
+	line-height: 0;
+}
 
+.float_bg {
+	background: rgba(0, 0, 0, 0.38);
+}
 
+.order-direction>div.dir-from {
+	padding-left: 0;
+}
+
+.order-direction>div {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	float: left;
+	padding: 1.25em 1.875em;
+	text-align: center;
+	width: 50%;
+}
+
+.dir-arrow .fas {
+	display: block;
+}
+
+.dir-from>.dir-cont>.coin-address {
+	margin-right: 5.46875em;
+}
+
+.coin-address {
+	color: #ababab;
+	font-size: .8em;
+	font-weight: 200;
+	opacity: .6;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.dir-from>.dir-cont>.coin-value {
+	margin-right: 3.125em;
+}
+
+.order-direction .coin-value {
+	font-size: 1.4em;
+	line-height: 1;
+	padding-bottom: 2px;
+	padding-top: 5px;
+}
+
+.dir-from>.dir-cont>.coin-head {
+	margin-right: 4.861em;
+}
+
+.order-direction .coin-head {
+	color: #bfbfbf;
+	font-size: .9em;
+	font-weight: 300;
+	line-height: 1;
+	opacity: .8;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.order-direction>div.dir-to {
+	padding-right: 0;
+}
+
+.order-direction>div {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	float: left;
+	padding: 1.25em 1.875em;
+	text-align: center;
+	width: 50%;
+}
+
+.dir-to>.dir-cont {
+	text-align: left;
+}
+
+*,
+::after,
+::before {
+	box-sizing: border-box;
+}
+
+.dir-to>.dir-cont>.coin-head {
+	margin-left: 4.861em;
+}
+
+.dir-to>.dir-cont>.coin-address {
+	margin-left: 5.46875em;
+}
+
+.order-direction>div.dir-arrow {
+	float: none;
+	font-size: 1.5em;
+	height: 100%;
+	left: 50%;
+	margin-left: -1.25em;
+	opacity: .6;
+	padding: 1.625em 0;
+	position: absolute;
+	width: 2.5em;
+}
+
+@media only screen and (max-width: 470px) {
+	.coin-address {
+		display: none;
+	}
+
+	.hero-content {
+		margin-top: 3rem;
+	}
+
+	.coin-value {
+		font-size: .9em!important;
+	}
+}

@@ -37,7 +37,27 @@ use Illuminate\Http\Request;
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', function (Request $request) {
-        return view('welcome');
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.easybit.com/currencyList');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+
+        $headers = array();
+        $headers[] = 'Api-Key: '.settings("EASYBIT_API_KEY");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $currencies = curl_exec($ch);
+        $currencies = result($currencies);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+            $currencies = [];
+        }
+        curl_close($ch);
+        // return response()->json(result($currencies));
+
+        return view('welcome', compact("currencies"));
     })->name('home');
 
     Route::get('rate', function (Request $request) {
@@ -56,7 +76,7 @@ Route::group(['middleware' => 'web'], function () {
 
 
         $headers = array();
-        $headers[] = 'Api-Key: test_Loh46ih4uoRKGJaGKae3WP8tY';
+        $headers[] = 'Api-Key: '.settings("EASYBIT_API_KEY");
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $result = curl_exec($ch);
@@ -67,12 +87,6 @@ Route::group(['middleware' => 'web'], function () {
 
         return response()->json(result($result));
     })->name('home');
-
-
-
-
-
-
 
 
     Route::any('webhook', function () {
@@ -87,22 +101,6 @@ Route::group(['middleware' => 'web'], function () {
     })->name('webhook');
 
 
-
-    // Binance Routes  63e8bce38ca3130007e23313cff9065c
-
-
-    Route::get('b', function () {
-        return crypto_transaction('63e8c7b94f989c0007c9ab6b7c6d5e81');
-    });
-    Route::get('a', function () {
-        $data['coin'] = "TBTC";
-        $data['wallet_address'] = "mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB";
-        $data['amount'] = "0.0010";
-        $new = transfer_crypto($data);
-        return $new;
-    });
-
-
     Route::any('ajax/exchangePrice',        [HomeController::class, 'exchangePrice']);
     Route::any('ajax/exchangeAddressInfo',  [HomeController::class, 'exchangeAddressInfo']);
     Route::any('ajax/exchangeMake',         [OrderController::class, 'createOrder'])->name('create'); //->middleware('auth');
@@ -111,9 +109,6 @@ Route::group(['middleware' => 'web'], function () {
     // Switch language
     // Route::any('lang/{lang}', [HomeController::class, 'language']);
     Route::get('lang/{lang}', [LanguageController::class, 'switchLang'])->name('lang.switch');
-
-
-
 
     Auth::routes();
 

@@ -77,7 +77,7 @@ if (!function_exists('settings')) {
    function settings($key)
    {
       if ($key == 'website_title') {
-         return 'sneat';
+         $key = 'website_name';
       }
 
       $result = Settings::where('key', $key)->first();
@@ -306,29 +306,27 @@ if (!function_exists('save_order')) {
    /**
     * return uuid()
     */
-   function save_order($data)
+   function save_order($arr)
    {
       $r = request();
-      $orderId = uniqid("ORD-", false);
-      $rate = getExchangeVal($r->fromCurrency, $r->toCurrency);
       $save = Order::create([
          'user_id'         => auth()->id(),
-         'order_id'        => $orderId,
-         'from_currency'   => $r->fromCurrency,
-         'to_currency'     => $r->toCurrency,
-         'send_amount'     => $r->fromQty,
-         'send_address'    => $data['send_address'],
-         'receive_amount'  => $data['receive_amount'],
-         'receive_address' => $data['receive_address'],
-         'order_type'      => $r->type,
-         'order_rate'      => $rate,
-         'order_rateRev'   => getExchangeVal($r->toCurrency, $r->fromCurrency), // (1 / $rate),
+         'order_id'        => $arr['id'],
+         'from_currency'   => $arr['send'],
+         'to_currency'     => $arr['receive'],
+         'send_amount'     => $arr['sendAmount'],
+         'send_address'    => $arr['sendAddress'],
+         'receive_amount'  => $arr['receiveAmount'],
+         'receive_address' => $arr['receiveAddress'],
+         'order_type'      => "fixed",
+         'order_rate'      => floatval($arr['sendAmount'] / $arr['receiveAmount']),
+         'order_rateRev'   => (1 / $r->rate),
          'order_status'    => "pending",
-         'order_left'      => $r->fromQty,
-         'order_token'     => sha1($orderId),
-         'raw_data'        => json_encode($data),
+         'order_left'      => $arr['sendAmount'],
+         'order_token'     => $arr['id'],
+         'raw_data'        => json_encode($arr),
          'order_reg'       => Carbon::now(),
-         'order_expiration' => Carbon::now()->addMinute(30), // time stamp,
+         'order_expiration' => Carbon::createFromTimestamp($arr['createdAt'])->addMinute(10), // time stamp,
       ]);
       return $save;
    }
@@ -404,12 +402,25 @@ if (!function_exists('get_wallet_address')) {
     * @param string currency
     * @param float-decimal amount
     */
-   function get_wallet_address($currency)
+   function get_wallet_address($payload) : array
    {
-      $bitgo = new BitGoSDK(getenv("BITGO_API_KEY_HERE"), strtolower($currency), true);
-      $bitgo->walletId = get_wallet_id($currency);
-      $createAddress = $bitgo->createWalletAddress();
-      return $createAddress;
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, 'https://api.easybit.com/order');
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_POST, 1);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+
+      $headers = array();
+      $headers[] = 'Api-Key: '.settings("EASYBIT_API_KEY");
+      $headers[] = 'Content-Type: application/json';
+      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+      $result = curl_exec($ch);
+      if (curl_errno($ch)) {
+         echo 'Error:' . curl_error($ch);
+      }
+      curl_close($ch);
+      return result($result);
    }
 }
 
