@@ -49,7 +49,7 @@ class BinanceController extends Controller
         $to     = "BTC";
         $sym    = "$from$to";
         $bin    = $this->bin->getTicker($sym);
-        return $find   = result($bin);
+        $find   = result($bin);
         $amount = $request->amount ?? 0;
         $search = searchInArray($find, $sym);
         if ($search) :
